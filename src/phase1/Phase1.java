@@ -21,7 +21,6 @@ import java.util.Scanner;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-
 public class Phase1 {
 
     public static void main(String[] args) {
