@@ -1,0 +1,3 @@
+Problems/Questions
+--------------------
+* Where to get the Scanner Input, new class or inside of mouseComponent? Or other places
