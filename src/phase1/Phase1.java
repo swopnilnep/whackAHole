@@ -15,6 +15,8 @@ public class Phase1 {
     public static void main(String[] args) {
         
         
+        // User dimensions input
+        
         Scanner myScanner = new Scanner(System.in);
         
         System.out.print("Enter the number of rows (between 3 and 9, inclusive): ");
@@ -36,6 +38,8 @@ public class Phase1 {
         }
         
         int userInputColumns = userColumns;
+        
+        // Begin main runnable
         
         EventQueue.invokeLater(
         new Runnable()
@@ -75,77 +79,120 @@ class ProgramFrame extends JFrame
 
 
 class HolesComponent extends JComponent
-{   private final int initialDiameter = 100;
+{   
+    
+    
+    private final int OUR_INITIAL_DIAMETER = 100;
     private int userRows;
     private int userColumns;
     
-    private int defaultWidth;
-    private int defaultHeight;
+    final private int OUR_DEFAULT_WIDTH;
+    final private int OUR_DEFAULT_HEIGHT;
     
-    private Ellipse2D myCurrentEllipse;
     private Ellipse2D myRedEllipse;
+    private Ellipse2D myCurrentEllipse;
     
-    private ArrayList<Ellipse2D> myEllipses = new ArrayList<Ellipse2D>();   
+    private int myScore = 0;
+    
+    private ArrayList<Ellipse2D> myEllipses = new ArrayList<>();   
     
     
     private ArrayList<Ellipse2D> ellipses(){
         return myEllipses;
     }
     
-    private ArrayList<Ellipse2D> setEllipses(ArrayList<Ellipse2D> other){
+    private void addToScore(){
+        
+        myScore += 5;
+        
+    }
+    
+    private int score(){
+        
+        return myScore;
+        
+    }
+    
+    private void setEllipses(ArrayList<Ellipse2D> other){
+                
         myEllipses = other;
-        return myEllipses;
+        
+    }
+    
+    private void setCurrentEllipse( Ellipse2D other)
+    {
+    
+        myCurrentEllipse = other;
+        
+    }
+    
+    
+    private Ellipse2D currentEllipse(){
+    
+        return myCurrentEllipse;
+        
     }
     
     private Ellipse2D redEllipse(){
+        
         return myRedEllipse;
     }
     
-    private Ellipse2D setRedEllipse(Ellipse2D other){
+    private void setRedEllipse(Ellipse2D other){
+
         myRedEllipse = other;
-        return myRedEllipse;
+
     }
     
     
-    public void setUpEllipses(){
+    public void initializeEllipses(){
+        
         Ellipse2D testEllipse;
         
-        for (int initialX = 0; initialX < defaultWidth; initialX += initialDiameter){
-            for (int initialY = 0; initialY < defaultHeight; initialY += initialDiameter){
-                testEllipse = new Ellipse2D.Double(initialX, initialY, initialDiameter,initialDiameter);
+        for (int initialX = 0; initialX < OUR_DEFAULT_WIDTH; initialX += OUR_INITIAL_DIAMETER){
+            for (int initialY = 0; initialY < OUR_DEFAULT_HEIGHT; initialY += OUR_INITIAL_DIAMETER){
+                testEllipse = new Ellipse2D.Double(initialX, initialY, OUR_INITIAL_DIAMETER,OUR_INITIAL_DIAMETER);
                 ellipses().add(testEllipse);
                 
             }
         }
     }
     
-    
-    public void pickRedEllipse(){
+    public void setRedEllipse(){
+        
         Random getRandomIndex = new Random();
         int redEllipseIndex = getRandomIndex.nextInt(ellipses().size());
-        setRedEllipse(ellipses().get(redEllipseIndex));
+        HolesComponent.this.setRedEllipse(ellipses().get(redEllipseIndex));
+        
     }
     
     
     @Override
     public void paintComponent(Graphics canvas){      
 
+        
         for (Ellipse2D ellipseOnCanvas: ellipses()){
             if (ellipseOnCanvas == redEllipse()){
                 ((Graphics2D) canvas).setColor(Color.red);
                 ((Graphics2D) canvas).fill(ellipseOnCanvas);
             }
-            else{
+            
+            else {
+                
                 ((Graphics2D) canvas).setColor(Color.black);
                 ((Graphics2D) canvas).fill(ellipseOnCanvas);
             }
+            
+        canvas.setFont(new Font("TimesRoman",Font.PLAIN, 100));
+        canvas.setColor(Color.green);
+        canvas.drawString("Score: " + score(),0,100);    
             
         }
     
 
     }
     
-    public void redoEllipse(int newEllipseHeight, int newEllipseWidth){
+    public void resetEllipsesOnResize(int newEllipseHeight, int newEllipseWidth){
         
         ArrayList<Ellipse2D> newEllipseArrayList = new ArrayList<Ellipse2D>();
 
@@ -168,18 +215,48 @@ class HolesComponent extends JComponent
         repaint();
     }
     
+    
+    public Ellipse2D findEllipseContainingPoint(Point2D clickPoint)
+    {
+        int ellipseNumber = 0;
+        Boolean pointInEllipse = false;     
+        Ellipse2D thisEllipse = null;
+        
+        for(; ellipseNumber < ellipses().size(); ++ellipseNumber){
+            
+            thisEllipse = ellipses().get(ellipseNumber);
+            
+            if (thisEllipse.contains(clickPoint)) 
+                pointInEllipse = true;
+            
+            if (pointInEllipse) break;
+        }
+        
+        return pointInEllipse ?  thisEllipse : null;
+        
+    }
+    
     @Override
     public Dimension getPreferredSize(){
-        setUpEllipses();
-        return new Dimension(defaultWidth, defaultHeight);
+        
+        initializeEllipses();
+        return new Dimension(OUR_DEFAULT_WIDTH, OUR_DEFAULT_HEIGHT);
+        
     }
     
     public HolesComponent(int inputRows, int inputColumns){
+        
         userRows = inputRows;
         userColumns = inputColumns;
-        defaultWidth = userColumns * initialDiameter;
-        defaultHeight = userRows * initialDiameter;
+        OUR_DEFAULT_WIDTH = userColumns * OUR_INITIAL_DIAMETER;
+        OUR_DEFAULT_HEIGHT = userRows * OUR_INITIAL_DIAMETER;
+        
+        setEllipses(new ArrayList<Ellipse2D>());
+        setCurrentEllipse(null);
+        
+        addMouseListener(new MouseHandler());
         addComponentListener(new windowComponentListener());
+        
     }
     
     
@@ -199,8 +276,8 @@ class HolesComponent extends JComponent
         public void componentResized(ComponentEvent e) {
             int newHeight = e.getComponent().getHeight() / userRows;
             int newWidth = e.getComponent().getWidth() / userColumns;
-            redoEllipse(newHeight, newWidth);     
-            pickRedEllipse();
+            resetEllipsesOnResize(newHeight, newWidth);     
+            setRedEllipse();
             
         }
         
@@ -211,11 +288,26 @@ class HolesComponent extends JComponent
         }
     }
     
+
     private class MouseHandler extends MouseAdapter{
+
+        Ellipse2D previouslyClickedHole;
         
         @Override
         public void mousePressed(MouseEvent event){
-
+            
+            setCurrentEllipse(findEllipseContainingPoint(event.getPoint()));
+            
+            if (currentEllipse() == redEllipse()){
+            
+                addToScore();
+                setRedEllipse();
+                
+            } 
+            
+            repaint();
+            
         }
+        
     }
 }
