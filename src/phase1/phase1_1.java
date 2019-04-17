@@ -1,5 +1,3 @@
-// David Will
-
 package phase1;
 
 import java.awt.*;
@@ -13,18 +11,6 @@ public class phase1_1 {
 
     
     public static void main(String[] args) {
-        
-        
-//        Scanner myScanner = new Scanner(System.in);
-//        
-//        System.out.print("Enter the number of rows: ");
-//        int userRows = myScanner.nextInt();
-//
-//        System.out.print("Enter the number of columns: ");
-//        int userColumns = myScanner.nextInt();
-
-        int userRows=0;
-        int userColumns=0;
         
         EventQueue.invokeLater(
         new Runnable()
@@ -56,7 +42,7 @@ class ProgramFrame extends JFrame
     public ProgramFrame()
     {
 
-        add(new MouseComponent());
+        Component add = add(new MouseComponent());
         pack();
         
     }
@@ -64,15 +50,22 @@ class ProgramFrame extends JFrame
 
 
 class MouseComponent extends JComponent
-{   final private int initialDiameter = 100;
-    private int userRows = 7;
-    private int userColumns = 5;
+{   
+
+    // Setting Final Instance Variables
     
-    final private int defaultWidth = userColumns * initialDiameter;
-    final private int defaultHeight = userRows * initialDiameter;
+    final private int OUR_INITIAL_DIAMETER = 100;
+    
+    final private int OUR_USER_ROWS = 7; // TODO take input from the user as initial input
+    final private int OUR_USER_COLUMNS = 5;
+    
+    final private int OUR_DEFAULT_WIDTH = OUR_USER_COLUMNS * OUR_INITIAL_DIAMETER;
+    final private int OUR_DEFAULT_HEIGHT = OUR_USER_ROWS * OUR_INITIAL_DIAMETER;
+    
+    // Non-Instance Variable Types
     
     private Ellipse2D myCurrentEllipse;
-    private ArrayList<Ellipse2D> myEllipses = new ArrayList<Ellipse2D>();
+    private ArrayList< Ellipse2D > myEllipses = new ArrayList<>();
     
     private ArrayList< Ellipse2D > ellipses(){
         
@@ -80,28 +73,35 @@ class MouseComponent extends JComponent
         
     }
     
-    private ArrayList<Ellipse2D> setEllipses(ArrayList<Ellipse2D> other){
+    private void setEllipses(ArrayList <Ellipse2D> other){
+        
         myEllipses = other;
-        return myEllipses;
+        
     }
     
+    private void setCurrentEllipse( Ellipse2D other)
+    {
+        
+        myCurrentEllipse = other;
+        
+    }
     
-    public void setUpEllipses(){
+    public void setupEllipses(){
+        
         Ellipse2D testEllipse;
         
-        for (int initialX = 0; initialX < defaultWidth; initialX += 100){
-            for (int initialY = 0; initialY < defaultHeight; initialY += 100){
+        for (int initialX = 0; initialX < OUR_DEFAULT_WIDTH; initialX += 100){
+            for (int initialY = 0; initialY < OUR_DEFAULT_HEIGHT; initialY += 100){
                 testEllipse = new Ellipse2D.Double(initialX, initialY, 100,100);
                 ellipses().add(testEllipse);
                 
             }
         }
         
-        
         for (Ellipse2D itemInArrayList: ellipses())
             System.out.println(itemInArrayList.getX());
+        
     }
-    
     
     public void pickRedEllipse(){
         
@@ -126,9 +126,9 @@ class MouseComponent extends JComponent
         int initialX = 0;
         int initialY = 0;
         
-        for (int numColumns = 0; numColumns < userColumns; ++ numColumns){
+        for (int numColumns = 0; numColumns < OUR_USER_COLUMNS; ++ numColumns){
             initialY =0;
-            for (int numRows = 0; numRows < userRows; ++ numRows){
+            for (int numRows = 0; numRows < OUR_USER_ROWS; ++ numRows){
                 redoneEllipse = new Ellipse2D.Double(initialX, initialY, newEllipseWidth, newEllipseHeight);
                 newEllipseArrayList.add(redoneEllipse);
                 initialY += newEllipseHeight;
@@ -136,40 +136,45 @@ class MouseComponent extends JComponent
             initialX += newEllipseWidth;
         }
         
-        setEllipses(newEllipseArrayList);
+        MouseComponent.this.setEllipses(newEllipseArrayList);
         repaint();
     }
     
     
-    public void findEllipseContainingPoint(Point2D clickPoint)
+    public Ellipse2D findEllipseContainingPoint(Point2D clickPoint)
     {
-//    
-//        int ellipseNumber = 0;
-//        Boolean pointInEllipse = false;
-//        
-        System.out.println(ellipses().size());
-//        
-//        for(; ellipseNumber < ellipses().size(); ++ellipseNumber ){
-//            System.out.println(
-//            
-//            ellipses().get(ellipseNumber).contains(clickPoint)
-//            
-//            );
-//            if (pointInEllipse) break;
-//        }
+        int ellipseNumber = 0;
+        Boolean pointInEllipse = false;     
+        Ellipse2D thisEllipse = null;
         
-//        return pointInEllipse ?  ellipses().get(ellipseNumber) : null;
-    
+        for(; ellipseNumber < ellipses().size(); ++ellipseNumber){
+            
+            thisEllipse = ellipses().get(ellipseNumber);
+            
+            if (thisEllipse.contains(clickPoint)) 
+                pointInEllipse = true;
+            
+            if (pointInEllipse) break;
+        }
+        
+        System.out.println(pointInEllipse);
+        
+        return pointInEllipse ?  thisEllipse : null;
+        
     }
     
     @Override
     public Dimension getPreferredSize(){
-        setUpEllipses();
-        return new Dimension(defaultWidth, defaultHeight);
+        
+        setupEllipses();
+        return new Dimension(OUR_DEFAULT_WIDTH, OUR_DEFAULT_HEIGHT);
         
     }
     
     public MouseComponent(){
+        
+        setEllipses(new ArrayList<Ellipse2D>());
+        setCurrentEllipse(null);
         
         addMouseListener(new MouseHandler());
         addComponentListener(new windowComponentListener());
@@ -191,8 +196,8 @@ class MouseComponent extends JComponent
 
         @Override
         public void componentResized(ComponentEvent e) {
-            int newHeight = e.getComponent().getHeight() / userRows;
-            int newWidth = e.getComponent().getWidth() / userColumns;
+            int newHeight = e.getComponent().getHeight() / OUR_USER_ROWS;
+            int newWidth = e.getComponent().getWidth() / OUR_USER_COLUMNS;
             redoEllipse(newHeight, newWidth);     
             
         }
@@ -219,8 +224,7 @@ class MouseComponent extends JComponent
                     + event.getX() + ", " + event.getY() + ")"
             );
             
-//            setCurrentEllipse(findEllipseContainingPoint(event.getPoint()));
-        findEllipseContainingPoint(event.getPoint());
+            setCurrentEllipse(findEllipseContainingPoint(event.getPoint()));
             
         }
         

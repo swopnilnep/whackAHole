@@ -1,4 +1,3 @@
-
 package whackAHole;
 
 import java.awt.*;
@@ -6,147 +5,60 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
 import javax.swing.*;
-import java.util.Scanner;
 
-/**
- * @author Swopnil N. Shrestha, David Will
- */
+public class whackAHole{
 
-public class whackAHole {
-    public static void main(String [] commandLineArguments)
+    public static void main(String[] commandLineArguments)
     {
-        
-//        Scanner scan = new Scanner(System.in);
-//        
-//        System.out.print("Enter the number of holes in each row: ");
-//        int holesPerRow = scan.nextInt();
-//        System.out.print("Enter the number of holes in each column: ");
-//        int holesPerColumn = scan.nextInt();
-//        
-        EventQueue.invokeLater(() -> {
-            ProgramFrame frame = new ProgramFrame();
-            
-            frame.setTitle("Whack A Hole");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setVisible(true);
-        });
     
-    }
-}
+        EventQueue.invokeLater(
+        new Runnable()
+        {
 
+            @Override
+            public void run()
+            {
 
-class InputHelper
-{
-    
-    Scanner scan = new Scanner(System.in);
-    private int holesInRow;
-    private int holesInColumn;
-    
-    
-    private void setHolesInRow()
-    {
-    
-        System.out.print("Enter the number of holes in a row: ");
-        holesInRow = scan.nextInt();
-        
-    }
-    
-    private void setColumnInRow()
-    {
-    
-        System.out.print("Enter the number of holes in a column: ");
-        holesInColumn = scan.nextInt();
-                    
-    }
-    
-    public int holesInRow(){
-    
-        return holesInRow;
-        
-    }
-    
-    public int holesInColumn(){
-    
-        return holesInColumn;
-        
-    }
-    
-}
+                ProgramFrame frame = new ProgramFrame();
 
+                frame.setTitle("Holes");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
 
-class ProgramFrame extends JFrame
-{
-    public ProgramFrame()
-    {        
-        add(new MouseComponent());
-        pack();
-    }   
-    
-}
+                }
 
-class MouseComponent extends JComponent
-{
-    private static final int OUR_DEFAULT_RADUIS = 50;
-    private static final int OUR_DEFAULT_WIDTH = OUR_DEFAULT_RADUIS * 2 * 3; // 3 initialized as holes per row (need to change that later)
-    private static final int OUR_DEFAULT_HEIGHT = OUR_DEFAULT_RADUIS * 2 * 3; // 3 initialized as holes per column (need to change that later)
-    
-    private ArrayList< Ellipse2D >  myHoles;
-    private Ellipse2D myCurrentHole;
-    
-    private ArrayList< Ellipse2D > holes()
-    {
-        
-        return myHoles;
-        
-    }
-    
-    private Ellipse2D currentHole()
-    {
-    
-        return myCurrentHole;
-        
-    }        
-    
-    private void setHoles(ArrayList< Ellipse2D > otherHoles)
-    {
-    
-        myHoles = otherHoles;
-        
-    }
-    
-    private void setCurrentHole(Ellipse2D otherHole)
-    {
-    
-        myCurrentHole = otherHole;
+            }
+        );
     
     }
     
-    public MouseComponent()
+    class ProgramFrame extends JFrame
     {
     
-        setHoles(new ArrayList< Ellipse2D >());
-        setCurrentHole(null);
+        public ProgramFrame()
+        {
         
-        // Add mouse click listener here
+            add(new MouseComponent());
+            pack();
         
+        }
+    
     }
     
-    @Override
-    public Dimension getPreferredSize() // This is an inbuilt method
+    class MouseComponent extends JComponent
     {
     
-        return new Dimension(OUR_DEFAULT_WIDTH, OUR_DEFAULT_HEIGHT);
+        final private int initialDiameter = 100;
+        private int userRows = 7;
+        private int userColumns = 5;
+        
+        private int defaultWidth = userColumns * initialDiameter;
+        private int defaultHeight = userRows * initialDiameter;
+        
+        private Ellipse2D myCurrentEllipse;
+        private ArrayList < Ellipse2D > myEllipses = 
+                new ArrayList< Ellipse2D >();
         
     }
-    
-    
-    @Override
-    public void paintComponent(Graphics canvas)
-    {
-        
-        for (Ellipse2D holeOnCanvas : holes())
-            ((Graphics2D) canvas).draw(holeOnCanvas);
 
-    }
-    
 }
