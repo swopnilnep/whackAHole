@@ -15,13 +15,13 @@ public class Phase1 {
     public static void main(String[] args) {
         
         
-        Scanner myScanner = new Scanner(System.in);
-        
-        System.out.print("Enter the number of rows: ");
-        int userRows = myScanner.nextInt();
-
-        System.out.print("Enter the number of columns: ");
-        int userColumns = myScanner.nextInt();
+//        Scanner myScanner = new Scanner(System.in);
+//        
+//        System.out.print("Enter the number of rows: ");
+//        int userRows = myScanner.nextInt();
+//
+//        System.out.print("Enter the number of columns: ");
+//        int userColumns = myScanner.nextInt();
         
         EventQueue.invokeLater(
         new Runnable()
@@ -31,7 +31,7 @@ public class Phase1 {
             public void run()
             {
 
-                ProgramFrame frame = new ProgramFrame(userRows, userColumns);
+                ProgramFrame frame = new ProgramFrame();
 
                 frame.setTitle("Holes");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,7 +50,7 @@ public class Phase1 {
 class ProgramFrame extends JFrame
 {
 
-    public ProgramFrame(int userInputRows, int userInputColumns)
+    public ProgramFrame()
     {
 
         add(new HolesComponent());
@@ -62,47 +62,82 @@ class ProgramFrame extends JFrame
 
 class HolesComponent extends JComponent
 {   private int initialDiameter = 100;
-    private int userRows = 7;
-    private int userColumns = 5;
+    private int userRows = 1;
+    private int userColumns = 1;
     
     private int defaultWidth = userColumns * initialDiameter;
     private int defaultHeight = userRows * initialDiameter;
     
     private Ellipse2D myCurrentEllipse;
-    private ArrayList<Ellipse2D> myEllipses;
+    private ArrayList<Ellipse2D> myEllipses = new ArrayList<Ellipse2D>();
     
     private ArrayList<Ellipse2D> ellipses(){
         return myEllipses;
     }
     
-    private void setCurrentEllipse(Ellipse2D other){
-        myCurrentEllipse = other;
+    private ArrayList<Ellipse2D> setEllipses(ArrayList<Ellipse2D> other){
+        myEllipses = other;
+        return myEllipses;
     }
     
-    private Ellipse2D currentEllipse(){
-        return myCurrentEllipse;
+    
+    public void setUpEllipses(){
+        Ellipse2D testEllipse;
+        
+        for (int initialX = 0; initialX < defaultWidth; initialX += 100){
+            for (int initialY = 0; initialY < defaultHeight; initialY += 100){
+                testEllipse = new Ellipse2D.Double(initialX, initialY, 100,100);
+                ellipses().add(testEllipse);
+                
+            }
+        }
+        
+        
+        for (Ellipse2D itemInArrayList: ellipses())
+            System.out.println(itemInArrayList.getX());
+    }
+    
+    
+    public void pickRedEllipse(){
+        
     }
     
     
     @Override
     public void paintComponent(Graphics canvas){      
-        Graphics2D g2 = (Graphics2D) canvas;
-        Ellipse2D testEllipse;
+
+        for (Ellipse2D ellipseOnCanvas: ellipses())
+            ((Graphics2D) canvas).fill(ellipseOnCanvas);
+    
+
+    }
+    
+    public void redoEllipse(int newEllipseHeight, int newEllipseWidth){
         
+        ArrayList<Ellipse2D> newEllipseArrayList = new ArrayList<Ellipse2D>();
+
+        Ellipse2D redoneEllipse = new Ellipse2D.Double(0,0,0,0);
         
-        int initialX;
-        int initialY;
+        int initialX = 0;
+        int initialY = 0;
         
-        for (initialX = 0; initialX < defaultWidth; initialX += 100){
-            for (initialY = 0; initialY < defaultHeight; initialY += 100){
-                testEllipse = new Ellipse2D.Double(initialX, initialY, initialDiameter, initialDiameter);
-                g2.fill(testEllipse);
+        for (int numColumns = 0; numColumns < userColumns; ++ numColumns){
+            initialY =0;
+            for (int numRows = 0; numRows < userRows; ++ numRows){
+                redoneEllipse = new Ellipse2D.Double(initialX, initialY, newEllipseWidth, newEllipseHeight);
+                newEllipseArrayList.add(redoneEllipse);
+                initialY += newEllipseHeight;
             }
-        }     
+            initialX += newEllipseWidth;
+        }
+        
+        setEllipses(newEllipseArrayList);
+        repaint();
     }
     
     @Override
     public Dimension getPreferredSize(){
+        setUpEllipses();
         return new Dimension(defaultWidth, defaultHeight);
     }
     
@@ -125,7 +160,10 @@ class HolesComponent extends JComponent
 
         @Override
         public void componentResized(ComponentEvent e) {
-            System.out.println("Window Resized");            
+            int newHeight = e.getComponent().getHeight() / userRows;
+            int newWidth = e.getComponent().getWidth() / userColumns;
+            redoEllipse(newHeight, newWidth);     
+            
         }
         
         @Override
