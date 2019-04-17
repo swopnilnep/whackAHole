@@ -34,7 +34,7 @@ public class phase1_1 {
             public void run()
             {
 
-                ProgramFrame frame = new ProgramFrame(userRows, userColumns);
+                ProgramFrame frame = new ProgramFrame();
 
                 frame.setTitle("Holes");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,7 +53,7 @@ public class phase1_1 {
 class ProgramFrame extends JFrame
 {
 
-    public ProgramFrame(int userInputRows, int userInputColumns)
+    public ProgramFrame()
     {
 
         add(new MouseComponent());
@@ -72,7 +72,7 @@ class MouseComponent extends JComponent
     final private int defaultHeight = userRows * initialDiameter;
     
     private Ellipse2D myCurrentEllipse;
-    private ArrayList< Ellipse2D > myEllipses = new ArrayList< Ellipse2D >();
+    private ArrayList<Ellipse2D> myEllipses = new ArrayList<Ellipse2D>();
     
     private ArrayList< Ellipse2D > ellipses(){
         
@@ -80,37 +80,64 @@ class MouseComponent extends JComponent
         
     }
     
-    private void setCurrentEllipse(Ellipse2D other){
-        
-        myCurrentEllipse = other;
-        
+    private ArrayList<Ellipse2D> setEllipses(ArrayList<Ellipse2D> other){
+        myEllipses = other;
+        return myEllipses;
     }
     
-    private Ellipse2D currentEllipse(){
+    
+    public void setUpEllipses(){
+        Ellipse2D testEllipse;
         
-        return myCurrentEllipse;
+        for (int initialX = 0; initialX < defaultWidth; initialX += 100){
+            for (int initialY = 0; initialY < defaultHeight; initialY += 100){
+                testEllipse = new Ellipse2D.Double(initialX, initialY, 100,100);
+                ellipses().add(testEllipse);
+                
+            }
+        }
+        
+        
+        for (Ellipse2D itemInArrayList: ellipses())
+            System.out.println(itemInArrayList.getX());
+    }
+    
+    
+    public void pickRedEllipse(){
         
     }
     
     
     @Override
-    public void paintComponent(Graphics canvas){     
+    public void paintComponent(Graphics canvas){      
+
+        for (Ellipse2D ellipseOnCanvas: ellipses())
+            ((Graphics2D) canvas).fill(ellipseOnCanvas);
+    
+
+    }
+    
+    public void redoEllipse(int newEllipseHeight, int newEllipseWidth){
         
-        Graphics2D g2 = (Graphics2D) canvas;
-        Ellipse2D testEllipse;
+        ArrayList<Ellipse2D> newEllipseArrayList = new ArrayList<Ellipse2D>();
+
+        Ellipse2D redoneEllipse = new Ellipse2D.Double(0,0,0,0);
         
-        int initialX;
-        int initialY;
+        int initialX = 0;
+        int initialY = 0;
         
-        for (initialX = 0; initialX < defaultWidth; initialX += 100){
-            
-            for (initialY = 0; initialY < defaultHeight; initialY += 100){
-                
-                testEllipse = new Ellipse2D.Double(initialX, initialY, initialDiameter, initialDiameter);
-                g2.fill(testEllipse);
-                
+        for (int numColumns = 0; numColumns < userColumns; ++ numColumns){
+            initialY =0;
+            for (int numRows = 0; numRows < userRows; ++ numRows){
+                redoneEllipse = new Ellipse2D.Double(initialX, initialY, newEllipseWidth, newEllipseHeight);
+                newEllipseArrayList.add(redoneEllipse);
+                initialY += newEllipseHeight;
             }
-        }     
+            initialX += newEllipseWidth;
+        }
+        
+        setEllipses(newEllipseArrayList);
+        repaint();
     }
     
     
@@ -137,7 +164,7 @@ class MouseComponent extends JComponent
     
     @Override
     public Dimension getPreferredSize(){
-        
+        setUpEllipses();
         return new Dimension(defaultWidth, defaultHeight);
         
     }
@@ -164,7 +191,10 @@ class MouseComponent extends JComponent
 
         @Override
         public void componentResized(ComponentEvent e) {
-            System.out.println("Window Resized");            
+            int newHeight = e.getComponent().getHeight() / userRows;
+            int newWidth = e.getComponent().getWidth() / userColumns;
+            redoEllipse(newHeight, newWidth);     
+            
         }
         
         @Override
