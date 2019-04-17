@@ -34,6 +34,46 @@ public class whackAHole {
     }
 }
 
+
+class InputHelper
+{
+    
+    Scanner scan = new Scanner(System.in);
+    private int holesInRow;
+    private int holesInColumn;
+    
+    
+    private void setHolesInRow()
+    {
+    
+        System.out.print("Enter the number of holes in a row: ");
+        holesInRow = scan.nextInt();
+        
+    }
+    
+    private void setColumnInRow()
+    {
+    
+        System.out.print("Enter the number of holes in a column: ");
+        holesInColumn = scan.nextInt();
+                    
+    }
+    
+    public int holesInRow(){
+    
+        return holesInRow;
+        
+    }
+    
+    public int holesInColumn(){
+    
+        return holesInColumn;
+        
+    }
+    
+}
+
+
 class ProgramFrame extends JFrame
 {
     public ProgramFrame()
