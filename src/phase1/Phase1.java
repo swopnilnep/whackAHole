@@ -4,7 +4,7 @@
 // Class: CS252 Object Oriented Programming with Java (Spring 2019)
 // Date: 2019/18/04
 
-package phase1;
+ package phase1;
 
 import java.awt.*;
 import java.awt.event.ComponentEvent;
@@ -23,15 +23,34 @@ import javax.swing.JFrame;
 
 public class Phase1 {
 
+//    Pre: What needs to be true
+//    Post: What changes
+//    Loop invariants: x
+    
     public static void main(String[] args) {
 
-        // User dimensions input
+//        
+//        Get user input from System.in using the Scanner object and verify with
+//        predeterminded conditions. Begin the EventQueue to generate the GUI
+//        
 
         Scanner myScanner = new Scanner(System.in);
 
         System.out.print("Enter the number of rows (between 3 and 9, inclusive): ");
+        
+        
+        // Invariant
+        //      myScanner does not have an integer
+        while (!myScanner.hasNextInt()){
+            System.err.println("Non-integer entered. Please enter a valid integer");
+            myScanner.next();
+            System.out.print("Enter the number of rows (between 3 and 9, inclusive): ");
+        }
+        
         int userRows = myScanner.nextInt();
 
+        // Invariant
+        //      myScanner is out of the expected range
         while (userRows > 9 | userRows < 3) {
             System.out.print("Please enter a valid number of rows: ");
             userRows = myScanner.nextInt();
@@ -40,8 +59,19 @@ public class Phase1 {
         int userInputRows = userRows;
 
         System.out.print("Enter the number of columns (between 3 and 9, inclusive): ");
+        
+        // Invariant
+        //      myScanner does not have an integer
+        while (!myScanner.hasNextInt()){
+            System.err.println("Non-integer entered. Please enter a valid integer");
+            myScanner.next();
+            System.out.print("Enter the number of rows (between 3 and 9, inclusive): ");
+        }
+        
         int userColumns = myScanner.nextInt();
 
+        // Invariant
+        //      myScanner is out of the expected range
         while (userColumns > 9 | userColumns < 3) {
             System.out.print("Please enter a valid number of columns: ");
             userColumns = myScanner.nextInt();
@@ -49,7 +79,6 @@ public class Phase1 {
 
         int userInputColumns = userColumns;
 
-        // Begin main runnable
 
         EventQueue.invokeLater(
             new Runnable() {
@@ -174,7 +203,9 @@ class HolesComponent extends JComponent {
     @Override
     public void paintComponent(Graphics canvas) {
 
-
+        // Invariant
+        //      For each iterator, ellipses() contains an Ellipse2D object
+        //      that is painted either red or black
         for (Ellipse2D ellipseOnCanvas: ellipses()) {
             if (ellipseOnCanvas == redEllipse()) {
                 ((Graphics2D) canvas).setColor(Color.red);
@@ -191,7 +222,6 @@ class HolesComponent extends JComponent {
 
         }
 
-
     }
 
     public void resetEllipsesOnResize(int newEllipseHeight, int newEllipseWidth) {
@@ -203,8 +233,12 @@ class HolesComponent extends JComponent {
         int initialX = 0;
         int initialY = 0;
 
+        // Invariant
+        //      Each Ellipse2D in the current column has been updated to the correct dimensions
         for (int numColumns = 0; numColumns < userColumns; ++numColumns) {
             initialY = 0;
+            // Invariant
+            //      Each Ellipse2D in the current row has been updated to the correct dimensions
             for (int numRows = 0; numRows < userRows; ++numRows) {
                 redoneEllipse = new Ellipse2D.Double(initialX, initialY, newEllipseWidth, newEllipseHeight);
                 newEllipseArrayList.add(redoneEllipse);
@@ -225,6 +259,8 @@ class HolesComponent extends JComponent {
         Boolean pointInEllipse = false;
         Ellipse2D thisEllipse = null;
 
+        // Invariant
+        //      thisEllipse is an ellipse from ellipses()
         for (; ellipseNumber < ellipses().size(); ++ellipseNumber) {
 
             thisEllipse = ellipses().get(ellipseNumber);
