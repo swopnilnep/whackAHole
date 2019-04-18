@@ -25,7 +25,8 @@ public class Phase1 {
 
     public static void main(String[] args) {
 
-        // User dimensions input
+        // Use the scanner class to get the number of rows and columns from the user
+        // using System.in, and verify that these are integers within the desired range (between 3 and 9) 
 
         Scanner myScanner = new Scanner(System.in);
 
@@ -50,6 +51,7 @@ public class Phase1 {
         int userInputColumns = userColumns;
 
         // Begin main runnable
+        // Create and set up the main program frame
 
         EventQueue.invokeLater(
             new Runnable() {
@@ -72,7 +74,8 @@ public class Phase1 {
 
 }
 
-
+// This is a class for the program frame, which only includes a constructor for
+// the class object. We add a component, entitled "HolesComponent" to the frame.
 class ProgramFrame extends JFrame {
 
     public ProgramFrame(int inputRows, int inputColumns) {
@@ -86,7 +89,7 @@ class ProgramFrame extends JFrame {
 
 class HolesComponent extends JComponent {
 
-
+    // Instance Fields
     private final int OUR_INITIAL_DIAMETER = 100;
     private int userRows;
     private int userColumns;
@@ -102,54 +105,77 @@ class HolesComponent extends JComponent {
     private ArrayList < Ellipse2D > myEllipses = new ArrayList < > ();
 
 
+// Private Accessors
+    
+    // pre: This instance is in a valid state
+    // post: returns field myEllipses, nothing is changed
     private ArrayList < Ellipse2D > ellipses() {
         return myEllipses;
     }
+    
+    // pre: This instance is in a valid state
+    // post: Returns the field myRedEllipse, nothing is changed
+    private Ellipse2D redEllipse() {
 
-    private void addToScore() {
-
-        myScore += 5;
-
+        return myRedEllipse;
     }
-
+    
+    // pre: This instance is in a valid state
+    // post: returns field myScore, nothing is changed
     private int score() {
 
         return myScore;
 
     }
+    
+    // pre: This instance is in a valid state and the user has clicked on a red ellipse
+    // post: adds 5 to the myScore field, then returns myScore
+    private void addToScore() {
 
-    private void setEllipses(ArrayList < Ellipse2D > other) {
-
-        myEllipses = other;
-
-    }
-
-    private void setCurrentEllipse(Ellipse2D other) {
-
-        myCurrentEllipse = other;
+        myScore += 5;
 
     }
-
-
+    
+    // pre: This instance is in a valid state
+    // post: Returns the field myCurrentEllipse, nothing is changed
     private Ellipse2D currentEllipse() {
 
         return myCurrentEllipse;
 
     }
 
-    private Ellipse2D redEllipse() {
+// Private Mutators
 
-        return myRedEllipse;
+    // pre: This instance is in a valid state
+    // post: Changes the myEllipses field to a different array containing Ellipse2D objects and doesn't return anything
+    private void setEllipses(ArrayList < Ellipse2D > other) {
+
+        myEllipses = other;
+
     }
 
+    // pre: This instance is in a valid state
+    // post: Sets the field myCurrentEllipse to different Ellipse2D object, which is passed in as a parameter
+    //       This method doesn't return anything.
+    private void setCurrentEllipse(Ellipse2D other) {
+
+        myCurrentEllipse = other;
+
+    }
+
+    // pre: This instance is in a valid state
+    // post: Sets the field myCurrentEllipse to an Ellipse2D object that is passed in as a parameter
+    //       This method does not return anything
     private void setRedEllipse(Ellipse2D other) {
 
         myRedEllipse = other;
 
     }
-
-
-    public void initializeEllipses() {
+    
+    // pre: This instance is in a valid state
+    // post: Field myEllipses has been added to via a loop based on fields userRows and userColumns
+    //       This function returns nothing
+    private void initializeEllipses() {
 
         Ellipse2D testEllipse;
 
@@ -161,16 +187,77 @@ class HolesComponent extends JComponent {
             }
         }
     }
-
-    public void setRedEllipse() {
+    
+    // pre: This instance is in a valid state
+    // post: Field myRedEllipse is changed to a random ellipse in myEllipses by accessing a random index of myEllipses
+    //       This function returns nothing
+    private void setRedEllipse() {
 
         Random getRandomIndex = new Random();
         int redEllipseIndex = getRandomIndex.nextInt(ellipses().size());
         HolesComponent.this.setRedEllipse(ellipses().get(redEllipseIndex));
 
     }
+    
+    
+    // pre: The instance is in a valid state
+    // post: The dimensions of each ellipse are modified based on the amount that the
+    //       window has been resized by the user--this amount is passed in as parameters newEllipseHeight and newEllipseWidth. 
+    //       Additionally, the field myEllipses has been updated to include the new Ellipse2D objects 
+    //       because they have different heights and widths.
+    private void resetEllipsesOnResize(int newEllipseHeight, int newEllipseWidth) {
 
+    ArrayList < Ellipse2D > newEllipseArrayList = new ArrayList < Ellipse2D > ();
 
+    Ellipse2D redoneEllipse = new Ellipse2D.Double(0, 0, 0, 0);
+
+    int initialX = 0;
+    int initialY = 0;
+
+    for (int numColumns = 0; numColumns < userColumns; ++numColumns) {
+        initialY = 0;
+        for (int numRows = 0; numRows < userRows; ++numRows) {
+            redoneEllipse = new Ellipse2D.Double(initialX, initialY, newEllipseWidth, newEllipseHeight);
+            newEllipseArrayList.add(redoneEllipse);
+            initialY += newEllipseHeight;
+        }
+
+        initialX += newEllipseWidth;
+    }
+
+    setEllipses(newEllipseArrayList);
+    repaint();
+    }
+    
+    
+    // pre: This instance is in a valid state
+    // post: This function returns an Ellipse2D object based on the location of a
+    //       clickpoint, which is passed in as a formal parameter
+    private Ellipse2D findEllipseContainingPoint(Point2D clickPoint) {
+
+    int ellipseNumber = 0;
+    Boolean pointInEllipse = false;
+    Ellipse2D thisEllipse = null;
+
+    for (; ellipseNumber < ellipses().size(); ++ellipseNumber) {
+
+        thisEllipse = ellipses().get(ellipseNumber);
+
+        if (thisEllipse.contains(clickPoint))
+            pointInEllipse = true;
+
+        if (pointInEllipse) break;
+    }
+
+    return pointInEllipse ? thisEllipse : null;
+
+    }
+
+// Overridden methods
+    // pre: The instance is in a valid state
+    // post: updates the canvas to match any changes when a function modifies myEllipses
+    //       Iterates through the myEllipses list and paints each ellipse red if it is
+    //       myRedEllipse, or black otherwise.
     @Override
     public void paintComponent(Graphics canvas) {
 
@@ -193,52 +280,9 @@ class HolesComponent extends JComponent {
 
 
     }
-
-    public void resetEllipsesOnResize(int newEllipseHeight, int newEllipseWidth) {
-
-        ArrayList < Ellipse2D > newEllipseArrayList = new ArrayList < Ellipse2D > ();
-
-        Ellipse2D redoneEllipse = new Ellipse2D.Double(0, 0, 0, 0);
-
-        int initialX = 0;
-        int initialY = 0;
-
-        for (int numColumns = 0; numColumns < userColumns; ++numColumns) {
-            initialY = 0;
-            for (int numRows = 0; numRows < userRows; ++numRows) {
-                redoneEllipse = new Ellipse2D.Double(initialX, initialY, newEllipseWidth, newEllipseHeight);
-                newEllipseArrayList.add(redoneEllipse);
-                initialY += newEllipseHeight;
-            }
-            
-            initialX += newEllipseWidth;
-        }
-
-        setEllipses(newEllipseArrayList);
-        repaint();
-    }
-
-
-    public Ellipse2D findEllipseContainingPoint(Point2D clickPoint) {
-        
-        int ellipseNumber = 0;
-        Boolean pointInEllipse = false;
-        Ellipse2D thisEllipse = null;
-
-        for (; ellipseNumber < ellipses().size(); ++ellipseNumber) {
-
-            thisEllipse = ellipses().get(ellipseNumber);
-
-            if (thisEllipse.contains(clickPoint))
-                pointInEllipse = true;
-
-            if (pointInEllipse) break;
-        }
-
-        return pointInEllipse ? thisEllipse : null;
-
-    }
-
+    // pre: This instance is in a valid state
+    // post: calls InitializeEllipses to draw the window with the dimensions that 
+    //       the user entered, and changes the dimensions of the screen to match
     @Override
     public Dimension getPreferredSize() {
 
@@ -247,6 +291,14 @@ class HolesComponent extends JComponent {
 
     }
 
+// Constructors
+    // pre: None
+    // post: takes in the user's input for rows and columns
+    //       field userRows equals the user's row input
+    //       field userColumns equals the user's column input
+    //       Changes the width and height parameters to correctly fit the number of ellipses
+    //       Sets myCurrentEllipse to null and myEllipses to an empty ArrayList
+    //       Adds a MouseListener and ComponentListener
     public HolesComponent(int inputRows, int inputColumns) {
 
         userRows = inputRows;
@@ -262,7 +314,8 @@ class HolesComponent extends JComponent {
 
     }
 
-
+    // This class handles the window resizes and calls the appropriate function
+    // to make sure that the ellipses stay proportional to the window
     private class windowComponentListener implements ComponentListener {
 
         @Override
@@ -292,7 +345,8 @@ class HolesComponent extends JComponent {
         }
     }
 
-
+    // This class monitors the users clicks and changes the red ellipse if the user
+    // successfully clicks on myRedEllipse
     private class MouseHandler extends MouseAdapter {
 
         @Override
