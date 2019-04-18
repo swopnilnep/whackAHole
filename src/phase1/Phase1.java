@@ -295,8 +295,6 @@ class HolesComponent extends JComponent {
 
     private class MouseHandler extends MouseAdapter {
 
-        Ellipse2D previouslyClickedHole;
-
         @Override
         public void mousePressed(MouseEvent event) {
 
