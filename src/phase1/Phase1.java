@@ -17,9 +17,14 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import javax.swing.BoxLayout;
+import static javax.swing.BoxLayout.Y_AXIS;
+import javax.swing.JButton;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class Phase1 {
 
@@ -111,17 +116,48 @@ class ProgramFrame extends JFrame {
 
     public ProgramFrame(int inputRows, int inputColumns) {
 
+        JPanel testPanel = new JPanel();
+        
+        testPanel.setLayout(new BorderLayout());
+       
+        JPanel newPanel = new JPanel();
+        newPanel.setLayout(new BoxLayout(newPanel, Y_AXIS));
+        newPanel.setBackground(Color.RED);
+  
+        JLabel scoreLabel = new JLabel("Score: ");
+        JLabel levelLabel = new JLabel("Level: ");
+        JLabel livesLabel = new JLabel("Lives Remaining:                               ");
+        JButton pauseButton = new JButton("Pause");
+        JButton highScoreButton = new JButton("High Scores");
+        newPanel.add(scoreLabel);
+        newPanel.add(levelLabel);
+        newPanel.add(livesLabel);
+        newPanel.add(pauseButton);
+        newPanel.add(highScoreButton);
+        testPanel.add(newPanel, "Center");
+
+        
+        add(testPanel, "East");
+        
         add(new HolesComponent(inputRows, inputColumns));
+        
         pack();
 
     }
 }
+ 
+ class sideBarPanel extends JPanel {
+     public sideBarPanel(){
+         
+     }
+     
+ }
 
 
 class HolesComponent extends JComponent {
 
     // Instance Fields
-    private final int OUR_INITIAL_DIAMETER = 100;
+    private final int OUR_INITIAL_DIAMETER = 200;
     private int userRows;
     private int userColumns;
 
@@ -236,7 +272,7 @@ class HolesComponent extends JComponent {
     //       window has been resized by the user--this amount is passed in as parameters newEllipseHeight and newEllipseWidth. 
     //       Additionally, the field myEllipses has been updated to include the new Ellipse2D objects 
     //       because they have different heights and widths.
-    private void resetEllipsesOnResize(int newEllipseHeight, int newEllipseWidth) {
+    private void resetEllipsesOnResize(int newEllipseHeight, double newEllipseWidth) {
 
     ArrayList < Ellipse2D > newEllipseArrayList = new ArrayList < Ellipse2D > ();
 
@@ -335,8 +371,8 @@ class HolesComponent extends JComponent {
 
         userRows = inputRows;
         userColumns = inputColumns;
-        OUR_DEFAULT_WIDTH = userColumns * OUR_INITIAL_DIAMETER;
-        OUR_DEFAULT_HEIGHT = userRows * OUR_INITIAL_DIAMETER;
+        OUR_DEFAULT_WIDTH = userColumns * (OUR_INITIAL_DIAMETER);
+        OUR_DEFAULT_HEIGHT = userRows * (OUR_INITIAL_DIAMETER);
 
         setEllipses(new ArrayList < Ellipse2D > ());
         setCurrentEllipse(null);
@@ -362,9 +398,10 @@ class HolesComponent extends JComponent {
 
         @Override
         public void componentResized(ComponentEvent event) {
+            //double sidebarWidth = event.getComponent().getWidth() * 0.2;
             
             int newHeight = event.getComponent().getHeight() / userRows;
-            int newWidth = event.getComponent().getWidth() / userColumns;
+            double newWidth = (event.getComponent().getWidth()) / userColumns;
             resetEllipsesOnResize(newHeight, newWidth);
             setRedEllipse();
 
