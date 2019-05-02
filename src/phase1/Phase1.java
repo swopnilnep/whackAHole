@@ -13,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.io.File;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -25,6 +26,10 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+ 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class Phase1 {
 
@@ -88,24 +93,24 @@ public class Phase1 {
 
         // Begin main runnable
         // Create and set up the main program frame
-
+        
         EventQueue.invokeLater(
             new Runnable() {
 
                 @Override
                 public void run() {
-
+                    
                     ProgramFrame frame = new ProgramFrame(userInputRows, userInputColumns);
 
                     frame.setTitle("Holes");
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.setVisible(true);
-
                 }
 
             }
         );
-
+        
+        
     }
 
 }
@@ -170,7 +175,8 @@ class HolesComponent extends JComponent {
     private int myScore = 0;
 
     private ArrayList < Ellipse2D > myEllipses = new ArrayList < > ();
-
+    
+    //defaultSound = new URL ("/home/willda07/Documents/whackahole");
 
 // Private Accessors
     
@@ -319,6 +325,37 @@ class HolesComponent extends JComponent {
     return pointInEllipse ? thisEllipse : null;
 
     }
+    
+    // Pre: The instance is in a vaild state and soundName is a vaild file
+    // Post: The soundfile entered by the user has been played
+    //       We use a try/catch block to make sure that the program doesn't crash on
+    //       an invalid filename.
+    private void playSound(String soundName){
+        try{
+    
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+            
+        }
+        
+        catch(Exception ex){
+            System.out.println("Error playing sound.");
+        }
+    }
+    
+//    private void timeHandle(){
+//        long runningTimeNano = System.nanoTime();
+//        double runningTimeSec = runningTimeNano / 1000000000.0;
+//        
+//        while (true){
+//            if (runningTimeSec % 5 == 0){
+//                setRedEllipse();
+//            }
+//        }
+//    }
+        
 
 // Overridden methods
     // pre: The instance is in a valid state
@@ -353,7 +390,6 @@ class HolesComponent extends JComponent {
     //       the user entered, and changes the dimensions of the screen to match
     @Override
     public Dimension getPreferredSize() {
-
         initializeEllipses();
         return new Dimension(OUR_DEFAULT_WIDTH, OUR_DEFAULT_HEIGHT);
 
@@ -424,10 +460,14 @@ class HolesComponent extends JComponent {
             setCurrentEllipse(findEllipseContainingPoint(event.getPoint()));
 
             if (currentEllipse() == redEllipse()) {
-
+                playSound("correctSound.wav");
                 addToScore();
                 setRedEllipse();
 
+            }
+            
+            else{
+                playSound("wrongSound.wav");
             }
 
             repaint();
