@@ -4,8 +4,6 @@
 // Class: CS252 Object Oriented Programming with Java (Spring 2019)
 // Date: 2019/18/04
 
- package phase1;
-
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -31,7 +29,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-public class Phase1 {
+public class Holes {
 
 //    Pre: What needs to be true
 //    Post: What changes
@@ -121,28 +119,33 @@ class ProgramFrame extends JFrame {
 
     public ProgramFrame(int inputRows, int inputColumns) {
 
-        JPanel testPanel = new JPanel();
+        JPanel mainPanel = new JPanel();
         
-        testPanel.setLayout(new BorderLayout());
+        mainPanel.setLayout(new BorderLayout());
        
-        JPanel newPanel = new JPanel();
-        newPanel.setLayout(new BoxLayout(newPanel, Y_AXIS));
-        newPanel.setBackground(Color.RED);
+        // Purpose: Main panel that holde
+        JPanel sidePanel = new JPanel();
+        sidePanel.setLayout(new BoxLayout(sidePanel, Y_AXIS));
+        sidePanel.setBackground(Color.RED);
   
-        JLabel scoreLabel = new JLabel("Score: ");
-        JLabel levelLabel = new JLabel("Level: ");
-        JLabel livesLabel = new JLabel("Lives Remaining:                               ");
+        JLabel scoreLabel = new JLabel("  Score: ");
+        JLabel levelLabel = new JLabel("  Level: ");
+        JLabel livesLabel = new JLabel("  Lives Remaining:    ");
         JButton pauseButton = new JButton("Pause");
+        JButton optionsButton = new JButton("Options");
         JButton highScoreButton = new JButton("High Scores");
-        newPanel.add(scoreLabel);
-        newPanel.add(levelLabel);
-        newPanel.add(livesLabel);
-        newPanel.add(pauseButton);
-        newPanel.add(highScoreButton);
-        testPanel.add(newPanel, "Center");
+        
+        sidePanel.add(scoreLabel);
+        sidePanel.add(levelLabel);
+        sidePanel.add(livesLabel);
+        sidePanel.add(pauseButton);
+        sidePanel.add(optionsButton);
+        sidePanel.add(highScoreButton);
+        
+        mainPanel.add(sidePanel, "Center");
 
         
-        add(testPanel, "East");
+        add(mainPanel, "East");
         
         add(new HolesComponent(inputRows, inputColumns));
         
@@ -150,13 +153,6 @@ class ProgramFrame extends JFrame {
 
     }
 }
- 
- class sideBarPanel extends JPanel {
-     public sideBarPanel(){
-         
-     }
-     
- }
 
 
 class HolesComponent extends JComponent {
