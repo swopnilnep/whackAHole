@@ -5,6 +5,8 @@
 // Date: 2019/18/04
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
@@ -29,7 +31,9 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-public class Holes {
+import javax.swing.Timer;
+
+public class Holes{
 
 //    Pre: What needs to be true
 //    Post: What changes
@@ -172,7 +176,16 @@ class HolesComponent extends JComponent {
 
     private ArrayList < Ellipse2D > myEllipses = new ArrayList < > ();
     
-    //defaultSound = new URL ("/home/willda07/Documents/whackahole");
+    int delay = 1000;
+    ActionListener taskPerformer = new ActionListener() {
+        
+    @Override
+    public void actionPerformed(ActionEvent evt) {  
+        setRedEllipse();
+        repaint();
+        }
+    };
+    Timer myTimer = new Timer(delay, taskPerformer);
 
 // Private Accessors
     
@@ -255,6 +268,7 @@ class HolesComponent extends JComponent {
 
             }
         }
+        myTimer.start();
     }
     
     // pre: This instance is in a valid state
