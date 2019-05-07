@@ -212,7 +212,8 @@ class ProgramFrame extends JFrame
         // Add Components to the Panel
         // 
         
-
+        // mainPanel().add(new ScoreComponent(model));
+        mainPanel().add(new HolesComponent(model));
 
         // 
         // Add the Panel to the Program Frame
@@ -226,78 +227,174 @@ class ProgramFrame extends JFrame
 class HolesComponent extends JComponent implements HolesModelObserver
 {
 
-    // 
+    //
     // Private Fields
-    // 
+    
 
-    private HolesModel myModel;
+        private HolesModel myModel;
 
     //
     // Private Accessors
-    // 
+    //
 
-    private HolesModel model()
-    {
-
-        return myModel;
-
-    }
-
-
-    // 
-    // Private Mutators
-    // 
-
-
-    private void setModel(HolesModel other)
-    {
-
-        myModel = other;
-
-    }
-
-    // 
-    // Public Constructors
-    // 
-
-    public HolesComponent(HolesModel otherModel)
-    {
-
-        setModel(otherModel);
-        model().attach(this);
-
-        // Click handler to listen to mouse clicks
-
-            addMouseListener(new MouseClickHandler());
-
-        // Add handler to detect resizes
-
-            addMouseListener(new ResizeHandler());
-
-    }
-    
-
-    // 
-    // Public Override
-    // 
-
-        // Main Controller for the Holes Model (size and position of the holes)
-
-        @Override
-        public void paintComponent(Graphics canvas)
+        private HolesModel model()
         {
 
-            final Graphics2D canvas2D = ((Graphics2D) canvas);
-        }
+            return myModel;
+
+            }
+
+    //
+    // Private Mutators
+    //
+
+        private void setModel(HolesModel otherModel)
+        {
+
+            myModel = otherModel;
+
+            }
+
+    //
+    // Public Ctors
+    //
+
+        public HolesComponent(HolesModel initialModel)
+        {
+
+            setModel(initialModel);
+            model().attach(this);
+
+            //
+            // Click handler listenes to clicks on the holes
+            //
+
+                addMouseListener(new MouseClickHandler());
+
+            //
+            // Component listener listenes to screen resize
+            //
+
+                addComponentListener(new ResizeHandler());
+
+            }
+
+    //
+    // Public Observation Methods
+    //
+
+        public void updateScore()
+        {
+
+            }
+
+        public void updateRedHolePosition()
+        {
+
+            repaint();
+
+            }
+
+    //
+    // Public Overrides
+    //
+
+        //
+        // Interacts with the model to set the position and sizes of the holes
+        //
+
+            @Override
+            public void paintComponent(Graphics canvas)
+            {
+
+                final Graphics2D canvas2D = ((Graphics2D) canvas);
+
+                    final double holeWidth =
+                        ((double) getWidth()) / model().numberOfColumns();
+                    final double holeHeight =
+                        ((double) getHeight()) / model().numberOfRows();
 
 
-        // 
-        // Get the width and height of the screen based on the constraints
-        // that were set initially
-        // 
+                    for (int row = 0; row < model().numberOfRows(); ++ row)
+                        for (int column = 0; column < model().numberOfColumns(); ++ column) {
 
-        final double holeWidth = ((double) getWidth()) / model().columns();
-        final double holeHeight = ((double) getWidth() / model().rows());
 
-        
-}
+                                canvas2D.setPaint(
+                                    row == model().redHoleRow()
+                                            && column == model().redHoleColumn()
+                                        ? Color.RED
+                                        : Color.BLACK
+                                    );
+
+                                model().hole(row, column).setFrame(
+                                    column * holeWidth,
+                                    row * holeHeight,
+                                    holeWidth,
+                                    holeHeight
+                                    );
+
+
+                                canvas2D.fill(model().hole(row, column));
+
+                            }
+
+            }
+
+
+    //
+    // Private Inner Classes
+    //
+
+
+        // Acts as a controller for the model
+        //
+
+            private class ResizeHandler extends ComponentAdapter
+            {
+
+                @Override
+                public void componentResized(ComponentEvent event)
+                {
+
+                    //
+                    // Pseudo-randomly move the red hole
+                    //
+
+                        model().randomizeRedHolePosition();
+
+                    }
+
+                }
+
+            private class MouseClickHandler extends MouseAdapter
+            {
+
+                @Override
+                public void mouseClicked(MouseEvent event)
+                {
+
+                    if (model().hole(
+                            model().redHoleRow(),
+                            model().redHoleColumn()
+                            ).contains(event.getPoint())) {
+
+                        //
+                        // Update the score with the additional points
+                        //
+
+                            model().setScore(model().score() + model().scoreIncrement());
+
+                        //
+                        // Pseudo-randomly move the red hole
+                        //
+
+                            model().randomizeRedHolePosition();
+
+                        }
+
+                    }
+
+                }
+
+
+    }

@@ -8,159 +8,272 @@ import java.util.Random;
 class HolesModel implements HolesModelObservable
 {
 
-    // 
-    // Private Fields
-    // 
+    //
+    // Private Class Fields
+    //
 
-    private ArrayList< HolesModelObserver > myObservers;
-    private ArrayList < Ellipse2D.Double > myHoles;
-
-    // private int myScore;
-    // private int myScoreChangeCoefficient;
-
-    private int numRows;
-    private int numColumns;
-
-    private Ellipse2D.Double myRedHole;
-    private int myRedHoleIndex;
-
-    private Random myRandomNumberGenerator;
-
-    // 
-    // Private Accessors
-    // 
-
-    private ArrayList< HolesModelObserver > observers()
-    {
-
-        return myObservers;
-
-    }
-
-    private ArrayList< Ellipse2D.Double > holes()
-    {
-
-        return myHoles;
-
-    }
-
-
-
-    // 
-    // Public Accessors
-    // 
-
-    public int redHoleIndex()
-    {
-
-        return myRedHoleIndex;
-
-    }
-
-    public Ellipse2D redHole()
-    {
-
-        return myRedHole;
-
-    }
-
-    public int rows()
-    {
-        return numRows;
-    }
-
-    public int columns()
-    {
-        return numColumns;
-    }
+        static final private int ourDefaultNumberOfRows = 4;
+        static final private int ourDefaultNumberOfColumns = 4;
 
     //
-    // Private Mutators
-    // 
+    // Private Fields
+    //
 
-    private void setObservers(ArrayList < HolesModelObserver > otherObservers)
-    {
+        private ArrayList< HolesModelObserver > myObservers;
 
-        myObservers = otherObservers;
+        private int myScore;
+        private int myScoreIncrement;
 
-    }
+        private ArrayList< ArrayList< Ellipse2D.Double > > myHoles;
+        private int myRedHoleRow;
+        private int myRedHoleColumn;
 
-    private void setHoles(ArrayList < Ellipse2D.Double > otherHoles)
-    {
+        private Random myPseudoRandomNumberGenerator;
 
-        myHoles = otherHoles;
-
-    }
-
+    ////
+    //// Private Accessors
+    ////
 
 
-    // 
-    // Public Mutators
-    // 
-
-    public void setRandomNumberGenerator(Random otherGenerator)
-    {
-        
-        myRandomNumberGenerator = otherGenerator;
-
-    }
-
-    public void setRedHolePosition(int otherRedHoleIndex)
-    {
-
-        myRedHoleIndex = otherRedHoleIndex;
-        announceRedHolePositionChange();
-
-    }
-
-    public void randomizeRedHolePosition()
-    {
-
-        setRedHolePosition(myRandomNumberGenerator.nextInt(myHoles.size()));
-
-    }
-
-    public void setRows(int otherRows)
-    {
-        numRows = otherRows;
-    }
-
-    public void setColumns(int otherColumns)
-    {
-        numColumns = otherColumns;
-    }
-
-    // 
-    // Constructors
-    // 
-
-    public HolesModel(int initialNumberOfColumns, int initialNumberOfRows){
-
-        setObservers(new ArrayList< HolesModelObserver >());
-        setRandomNumberGenerator(new Random());
-
-        setRows(initialNumberOfRows);
-        setColumns(initialNumberOfColumns);
-        
-        for (int holeIndex = 0; holeIndex < initialNumberOfColumns * initialNumberOfRows; ++holeIndex)
+        private ArrayList< HolesModelObserver > observers()
         {
-            myHoles.add(new Ellipse2D.Double(0,0,0,0));
-        }
+
+            return myObservers;
+
+            }
+
+        private ArrayList< ArrayList< Ellipse2D.Double > > holes()
+        {
+
+            return myHoles;
+
+            }
+
+    ////
+    //// Public Accessors
+    ////
+
+        public int score()
+        {
+
+            return myScore;
+
+            }
+
+        public int scoreIncrement()
+        {
+
+            return myScoreIncrement;
+
+            }
+
+        public int redHoleRow()
+        {
+
+            return myRedHoleRow;
+
+            }
+
+        public int redHoleColumn()
+        {
+
+            return myRedHoleColumn;
+
+            }
+
+        public Ellipse2D.Double hole(int row, int column)
+        {
+
+            return holes().get(row).get(column);
+
+            }
+
+        public int numberOfRows()
+        {
+
+            return holes().size();
+
+            }
+
+        public int numberOfColumns()
+        {
+
+            return holes().get(0).size();
+
+            }
+
+        public Ellipse2D.Double redHole()
+        {
+
+            return holes().get(redHoleRow()).get(redHoleColumn());
+
+            }
+
+        public Random randomNumber()
+        {
+
+            return myPseudoRandomNumberGenerator;
+
+            }
+
+    ////
+    //// Private Mutators
+    ////
+
+        private void setObservers(ArrayList< HolesModelObserver> otherObservers)
+        {
+
+            myObservers = otherObservers;
+
+            }
+
+        private void setHoles(ArrayList< ArrayList< Ellipse2D.Double > > otherHoles)
+        {
+
+            myHoles = otherHoles;
+
+            }
+
+    ////
+    //// Public Mutators
+    ////
+
+        public void setScore(int otherScore)
+        {
+
+            myScore = otherScore;
+
+            announceScoreChange();
+
+            }
+
+        public void setScoreIncrement(int otherIncrement)
+        {
+
+            myScoreIncrement = otherIncrement;
+
+            }
+
+        public void incrementScore()
+        {
+
+            setScore(score() + scoreIncrement());
+
+            }
+
+        private void setRedHolePosition(int otherRow, int otherColumn)
+        {
+
+            myRedHoleRow = otherRow;
+            myRedHoleColumn = otherColumn;
+
+            announceRedHolePositionChange();
+
+            }
+
+        public void setPseudoRandomNumberGenerator(Random otherGenerator)
+        {
+
+            myPseudoRandomNumberGenerator = otherGenerator;
+
+            }
+
+        public void randomizeRedHolePosition()
+        {
+
+            setRedHolePosition(
+                randomNumber().nextInt(numberOfRows()),
+                randomNumber().nextInt(numberOfColumns())
+                );
+
+            }
+
+    ////
+    //// Public Ctors
+    ////
+
+        HolesModel()
+        {
+
+            this(ourDefaultNumberOfRows, ourDefaultNumberOfColumns);
+
+            }
+
+        HolesModel(int initialNumberOfRowsAndColumns)
+        {
+
+            this(initialNumberOfRowsAndColumns, initialNumberOfRowsAndColumns);
+
+            }
+
+        HolesModel(int initialNumberOfRows, int initialNumberOfColumns)
+        {
+
+            setObservers(new ArrayList< HolesModelObserver >());
+
+            setScore(0);
+            setScoreIncrement(5);
+            setPseudoRandomNumberGenerator(new Random());
+
+            //
+            // Initialize the collection of holes to a
+            // initialNumberOfRows-by-initialNumberOfColumns-sized collection of
+            // zero-sized ellipses
+            //
+
+                myHoles = new ArrayList< ArrayList< Ellipse2D.Double > >();
+
+                for (int row = 0; row < initialNumberOfRows; ++ row) {
+
+                    myHoles.add(new ArrayList< Ellipse2D.Double >());
+
+                    for (int column = 0; column < initialNumberOfColumns; ++ column)
+                        myHoles.get(row).add(new Ellipse2D.Double(0, 0, 0, 0));
+
+                    }
+
+            randomizeRedHolePosition();;
+
+            }
+
+    ////
+    //// Public Observation Methods
+    ////
+
+        @Override
+        public void announceScoreChange()
+        {
+
+            for (HolesModelObserver currentObserver : observers())
+                currentObserver.updateScore();
+
+            }
+
+        @Override
+        public void announceRedHolePositionChange()
+        {
+
+            for (HolesModelObserver currentObserver : observers())
+                currentObserver.updateRedHolePosition();
+
+            }
+
+        @Override
+        public void attach(HolesModelObserver anotherObserver)
+        {
+
+            if (! observers().contains(anotherObserver))
+                observers().add(anotherObserver);
+
+            }
+
+        @Override
+        public void detach(HolesModelObserver currentObserver)
+        {
+
+            observers().remove(currentObserver);
+
+            }
 
 
     }
-
-    // 
-    //  Public Observation Methods
-    // 
-
-    @Override
-    public void announceRedHolePositionChange()
-    {
-
-        for (HolesModelObserver currentObserver : observers())
-            currentObserver.updateRedHolePosition();
-
-        }
-
-}
