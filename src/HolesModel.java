@@ -29,6 +29,12 @@ class HolesModel implements HolesModelObservable
         private int myRedHoleColumn;
 
         private Random myPseudoRandomNumberGenerator;
+        
+        private Boolean soundIsMuted = false;
+        private final String OUR_CORRECT_SOUND = "sounds/correctSound.wav";
+        private final String OUR_WRONG_SOUND = "sounds/wrongSound.wav";
+        
+        private int myTimerDelay = 1000;
 
     ////
     //// Private Accessors
@@ -115,6 +121,28 @@ class HolesModel implements HolesModelObservable
             return myPseudoRandomNumberGenerator;
 
             }
+        
+        public Boolean isMuted()
+        {
+            
+            return soundIsMuted;
+            
+        }
+        
+        public String correctSound()
+        {
+            return OUR_CORRECT_SOUND;
+        }
+        
+        public String wrongSound()
+        {
+            return OUR_WRONG_SOUND;
+        }
+        
+        public int myTimerDelay()
+        {
+            return myTimerDelay;
+        }
 
     ////
     //// Private Mutators
@@ -187,6 +215,16 @@ class HolesModel implements HolesModelObservable
                 );
 
             }
+        
+        public void toggleMute()
+        {
+            soundIsMuted = !soundIsMuted;
+        }
+        
+        public void setTimerDelay(int otherDelay)
+        {
+            myTimerDelay = otherDelay;
+        }
 
     ////
     //// Public Ctors

@@ -10,5 +10,7 @@ public interface HolesModelObserver
         //
         // Tell this object that the subject it's observing has changed its score
         //
+    
+    void updateSoundStatus();
 
     }

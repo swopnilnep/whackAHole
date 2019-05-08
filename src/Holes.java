@@ -10,10 +10,14 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.io.File;
 import javax.swing.*;
 
 import java.util.Scanner;
 import java.util.Random;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class Holes {
         public static void main(String[] args)
@@ -214,6 +218,7 @@ class ProgramFrame extends JFrame
         
         // mainPanel().add(new ScoreComponent(model));
         mainPanel().add(new HolesComponent(model));
+        mainPanel().add(new ScoreComponent(model));
 
         // 
         // Add the Panel to the Program Frame
@@ -224,12 +229,11 @@ class ProgramFrame extends JFrame
 
 }
 
-class HolesComponent extends JComponent implements HolesModelObserver
+class ScoreComponent extends JLabel implements HolesModelObserver
 {
-
     //
     // Private Fields
-    
+    //
 
         private HolesModel myModel;
 
@@ -253,6 +257,98 @@ class HolesComponent extends JComponent implements HolesModelObserver
 
             myModel = otherModel;
 
+            }
+        
+    //
+    // Public Ctors
+    //
+        
+        public ScoreComponent(HolesModel initialModel)
+        {
+            setModel(initialModel);
+            model().attach(this);
+            
+            setFont(new Font("Times New Roman", Font.BOLD, 40));
+            setForeground(Color.GREEN);
+            
+            setText("Score: " + model().score());
+        }
+        
+    //
+    // Public Observation Methods
+    //
+        @Override
+        public void updateScore()
+        {
+            setText("Score: " + model().score());
+            
+            repaint();
+        }
+        
+        @Override
+        public void updateRedHolePosition()
+        {
+
+            }
+        
+        @Override
+        public void updateSoundStatus()
+        {
+            
+        }
+    
+}
+
+
+class HolesComponent extends JComponent implements HolesModelObserver
+{
+
+    //
+    // Private Fields
+    
+
+        private HolesModel myModel;
+        
+
+    //
+    // Private Accessors
+    //
+
+        private HolesModel model()
+        {
+
+            return myModel;
+
+            }
+
+    //
+    // Private Mutators
+    //
+
+        private void setModel(HolesModel otherModel)
+        {
+
+            myModel = otherModel;
+
+            }
+       
+    //
+    // Methods
+    //
+        
+        public void playSound(String soundName){
+                try{
+
+                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+                    Clip clip = AudioSystem.getClip();
+                    clip.open(audioInputStream);
+                    clip.start();
+
+                }
+
+                catch(Exception ex){
+                    System.out.println("Error playing sound.");
+                }
             }
 
     //
@@ -282,18 +378,24 @@ class HolesComponent extends JComponent implements HolesModelObserver
     //
     // Public Observation Methods
     //
-
+        @Override
         public void updateScore()
         {
 
             }
-
+        @Override
         public void updateRedHolePosition()
         {
 
             repaint();
 
             }
+        
+        @Override
+        public void updateSoundStatus()
+        {
+            
+        }
 
     //
     // Public Overrides
@@ -339,6 +441,9 @@ class HolesComponent extends JComponent implements HolesModelObserver
                             }
 
             }
+            
+
+    timeHandler myTimer = new Timer(model().myTimerDelay(), taskPerformer);
 
 
     //
@@ -349,6 +454,38 @@ class HolesComponent extends JComponent implements HolesModelObserver
         // Acts as a controller for the model
         //
 
+    
+            private class timeHandler extends Timer
+            {
+                ActionListener taskPerformer = new ActionListener() {
+        
+                @Override
+                public void actionPerformed(ActionEvent evt) {  
+                    model().randomizeRedHolePosition();
+                    repaint();
+                    }
+                };
+                
+                // Private Mutators
+                
+                private void setActionListener(ActionListener other){
+                    
+                }
+                
+                public timeHandler(int initialDelay){
+                    
+                    super(initialDelay, taskPerformer);
+
+                }
+                
+                public timeHandler(int initialDelay, ActionListener other)
+                {
+                    
+                }
+                
+            }
+            
+            
             private class ResizeHandler extends ComponentAdapter
             {
 
@@ -383,7 +520,10 @@ class HolesComponent extends JComponent implements HolesModelObserver
                         //
 
                             model().setScore(model().score() + model().scoreIncrement());
-
+                            
+                            if (!model().isMuted()){
+                                playSound(model().correctSound());
+                            }
                         //
                         // Pseudo-randomly move the red hole
                         //
@@ -391,6 +531,12 @@ class HolesComponent extends JComponent implements HolesModelObserver
                             model().randomizeRedHolePosition();
 
                         }
+                    
+                    else{
+                        if (!model().isMuted()){
+                            playSound(model().wrongSound());
+                        }
+                    }
 
                     }
 
