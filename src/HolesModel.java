@@ -1,9 +1,15 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.*;
+import java.io.File;
 import javax.swing.*;
 
 import java.util.ArrayList;
 import java.util.Random;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 class HolesModel implements HolesModelObservable
 {
@@ -26,7 +32,7 @@ class HolesModel implements HolesModelObservable
         
         private int myLivesRemaining = 3;
 
-        private int myLevel;
+        private int myLevel = 1;
         private int myCorrectClicks = 0;
 
         private ArrayList< ArrayList< Ellipse2D.Double > > myHoles;
@@ -159,10 +165,13 @@ class HolesModel implements HolesModelObservable
             return OUR_WRONG_SOUND;
         }
         
-        public int myTimerDelay()
+        public int timerDelay()
         {
             return myTimerDelay;
         }
+        
+        
+        
 
     ////
     //// Private Mutators
@@ -240,8 +249,15 @@ class HolesModel implements HolesModelObservable
         {
            
             setLevel(level() + 1);
+            setScoreIncrement(scoreIncrement() + 5);
+            
             announceLevelChange();
             
+        }
+        
+        public void setTimerDelay(int otherDelay)
+        {
+            myTimerDelay = otherDelay;
         }
 
         private void setRedHolePosition(int otherRow, int otherColumn)
@@ -275,11 +291,8 @@ class HolesModel implements HolesModelObservable
         {
             soundIsMuted = !soundIsMuted;
         }
-        
-        public void setTimerDelay(int otherDelay)
-        {
-            myTimerDelay = otherDelay;
-        }
+
+       
 
     ////
     //// Public Ctors

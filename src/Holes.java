@@ -447,7 +447,7 @@ class LevelsComponent extends JLabel implements HolesModelObserver
             setFont(new Font("Times New Roman", Font.BOLD, 30));
             setForeground(Color.BLACK);
             
-            setText("Level: " + model().score());
+            setText("Level: " + model().level());
         }
         
     //
@@ -522,6 +522,19 @@ class HolesComponent extends JComponent implements HolesModelObserver
     // Methods
     //
         
+       
+        ActionListener taskPerformer = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent evt) {  
+            model().randomizeRedHolePosition();
+            repaint();
+            }
+        };
+        int myDelay = 1000;
+        Timer myTimer = new Timer(myDelay, taskPerformer);
+        
+        
         public void playSound(String soundName){
                 try{
 
@@ -592,7 +605,7 @@ class HolesComponent extends JComponent implements HolesModelObserver
         @Override
         public void updateLevel()
         {
-            
+            playSound(model().wrongSound());
         }
 
     //
@@ -606,7 +619,7 @@ class HolesComponent extends JComponent implements HolesModelObserver
             @Override
             public void paintComponent(Graphics canvas)
             {
-
+                myTimer.start();
                 final Graphics2D canvas2D = ((Graphics2D) canvas);
 
                     final double holeWidth =
@@ -673,7 +686,7 @@ class HolesComponent extends JComponent implements HolesModelObserver
                         //
                         // Update the score with the additional points
                         //
-
+                            myTimer.restart();
                             model().setScore(model().score() + model().scoreIncrement());
                             
                             if (!model().isMuted()){
