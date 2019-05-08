@@ -24,6 +24,8 @@ class HolesModel implements HolesModelObservable
         private int myScore;
         private int myScoreIncrement;
 
+        private int myLevel;
+
         private ArrayList< ArrayList< Ellipse2D.Double > > myHoles;
         private int myRedHoleRow;
         private int myRedHoleColumn;
@@ -58,6 +60,11 @@ class HolesModel implements HolesModelObservable
     ////
     //// Public Accessors
     ////
+
+        public int level()
+        {
+            return myLevel;
+        }
 
         public int score()
         {
@@ -162,6 +169,11 @@ class HolesModel implements HolesModelObservable
 
             }
 
+        private void setLevel(int other)
+        {
+            myLevel = other;
+        }
+
     ////
     //// Public Mutators
     ////
@@ -188,6 +200,12 @@ class HolesModel implements HolesModelObservable
             setScore(score() + scoreIncrement());
 
             }
+
+        public void incrementLevel()
+        {
+            setLevel(level() + 1);
+            announceScoreChange();
+        }
 
         private void setRedHolePosition(int otherRow, int otherColumn)
         {
@@ -288,6 +306,14 @@ class HolesModel implements HolesModelObservable
             }
 
         @Override
+        public void announceLevelChange()
+        {
+
+            for (HolesModelObserver currentObserver : observers())
+                currentObserver.updateLevel();
+        }
+
+        @Override
         public void announceRedHolePositionChange()
         {
 
@@ -295,6 +321,7 @@ class HolesModel implements HolesModelObservable
                 currentObserver.updateRedHolePosition();
 
             }
+            
 
         @Override
         public void attach(HolesModelObserver anotherObserver)
@@ -312,6 +339,7 @@ class HolesModel implements HolesModelObservable
             observers().remove(currentObserver);
 
             }
+
 
 
     }

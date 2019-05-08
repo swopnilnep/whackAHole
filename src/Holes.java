@@ -225,6 +225,7 @@ class ProgramFrame extends JFrame
         JPanel sidebarPanel = new JPanel();
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.X_AXIS));
         sidebarPanel.add(new ScoreComponent(model));
+        sidebarPanel.add(new LevelsComponent(model));
         
         mainPanel().add(holesPanel, BorderLayout.CENTER);
         mainPanel().add(sidebarPanel, BorderLayout.EAST);
@@ -306,9 +307,89 @@ class ScoreComponent extends JLabel implements HolesModelObserver
         {
             
         }
+
+        @Override
+        public void updateLevel()
+        {
+            
+        }
     
 }
 
+class LevelsComponent extends JLabel implements HolesModelObserver
+{
+    //
+    // Private Fields
+    //
+
+        private HolesModel myModel;
+
+    //
+    // Private Accessors
+    //
+
+        private HolesModel model()
+        {
+
+            return myModel;
+
+            }
+
+    //
+    // Private Mutators
+    //
+
+        private void setModel(HolesModel otherModel)
+        {
+
+            myModel = otherModel;
+
+            }
+        
+    //
+    // Public Ctors
+    //
+        
+        public LevelsComponent(HolesModel initialModel)
+        {
+            setModel(initialModel);
+            model().attach(this);
+            
+            setFont(new Font("Times New Roman", Font.BOLD, 40));
+            setForeground(Color.BLACK);
+            
+            setText("Level: " + model().score());
+        }
+        
+    //
+    // Public Observation Methods
+    //
+        @Override
+        public void updateScore()
+        {
+
+        }
+        
+        @Override
+        public void updateRedHolePosition()
+        {
+
+            }
+        
+        @Override
+        public void updateSoundStatus()
+        {
+            
+        }
+
+        @Override
+        public void updateLevel()
+        {
+            setText("Level: " + model().level());
+            repaint();
+        }
+    
+}
 
 class HolesComponent extends JComponent implements HolesModelObserver
 {
@@ -403,6 +484,12 @@ class HolesComponent extends JComponent implements HolesModelObserver
         
         @Override
         public void updateSoundStatus()
+        {
+            
+        }
+
+        @Override
+        public void updateLevel()
         {
             
         }

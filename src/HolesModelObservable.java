@@ -1,6 +1,8 @@
 public interface HolesModelObservable
 {
 
+    void announceLevelChange();
+
     void announceScoreChange();
         //
         // Announce to all observer of this object that the score has changed
