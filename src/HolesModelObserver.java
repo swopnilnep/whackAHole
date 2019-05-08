@@ -12,5 +12,9 @@ public interface HolesModelObserver
         //
     
     void updateSoundStatus();
+    
+    
+    void updateLivesRemaining();
 
     }
+

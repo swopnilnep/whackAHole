@@ -223,8 +223,9 @@ class ProgramFrame extends JFrame
         holesPanel.add(new HolesComponent(model));
         
         JPanel sidebarPanel = new JPanel();
-        sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.X_AXIS));
+        sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
         sidebarPanel.add(new ScoreComponent(model));
+        sidebarPanel.add(new LivesComponent(model));
         
         mainPanel().add(holesPanel, BorderLayout.CENTER);
         mainPanel().add(sidebarPanel, BorderLayout.EAST);
@@ -278,7 +279,7 @@ class ScoreComponent extends JLabel implements HolesModelObserver
             setModel(initialModel);
             model().attach(this);
             
-            setFont(new Font("Times New Roman", Font.BOLD, 40));
+            setFont(new Font("Times New Roman", Font.BOLD, 30));
             setForeground(Color.GREEN);
             
             setText("Score: " + model().score());
@@ -305,6 +306,88 @@ class ScoreComponent extends JLabel implements HolesModelObserver
         public void updateSoundStatus()
         {
             
+        }
+        
+        @Override
+        public void updateLivesRemaining()
+        {
+            
+        }
+    
+}
+
+
+class LivesComponent extends JLabel implements HolesModelObserver
+{
+    //
+    // Private Fields
+    //
+
+        private HolesModel myModel;
+
+    //
+    // Private Accessors
+    //
+
+        private HolesModel model()
+        {
+
+            return myModel;
+
+            }
+
+    //
+    // Private Mutators
+    //
+
+        private void setModel(HolesModel otherModel)
+        {
+
+            myModel = otherModel;
+
+            }
+        
+    //
+    // Public Ctors
+    //
+        
+        public LivesComponent(HolesModel initialModel)
+        {
+            setModel(initialModel);
+            model().attach(this);
+            
+            setFont(new Font("Times New Roman", Font.BOLD, 30));
+            setForeground(Color.GREEN);
+            
+            setText("Lives Remaining: " + model().livesRemaining());
+        }
+        
+    //
+    // Public Observation Methods
+    //
+        @Override
+        public void updateScore()
+        {
+         
+        }
+        
+        @Override
+        public void updateRedHolePosition()
+        {
+
+            }
+        
+        @Override
+        public void updateSoundStatus()
+        {
+            
+        }
+        
+        @Override
+        public void updateLivesRemaining()
+        {
+            setText("Lives Remaining: "+ model().livesRemaining());
+            repaint();
         }
     
 }
@@ -406,6 +489,12 @@ class HolesComponent extends JComponent implements HolesModelObserver
         {
             
         }
+        
+        @Override
+        public void updateLivesRemaining()
+        {
+            
+        }
 
     //
     // Public Overrides
@@ -502,6 +591,7 @@ class HolesComponent extends JComponent implements HolesModelObserver
                     else{
                         if (!model().isMuted()){
                             playSound(model().wrongSound());
+                            model().decrementLivesRemaining();
                         }
                     }
 

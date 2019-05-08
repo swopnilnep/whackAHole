@@ -23,6 +23,8 @@ class HolesModel implements HolesModelObservable
 
         private int myScore;
         private int myScoreIncrement;
+        
+        private int myLivesRemaining = 3;
 
         private ArrayList< ArrayList< Ellipse2D.Double > > myHoles;
         private int myRedHoleRow;
@@ -72,6 +74,11 @@ class HolesModel implements HolesModelObservable
             return myScoreIncrement;
 
             }
+        
+        public int livesRemaining()
+        {
+            return myLivesRemaining;
+        }
 
         public int redHoleRow()
         {
@@ -188,6 +195,18 @@ class HolesModel implements HolesModelObservable
             setScore(score() + scoreIncrement());
 
             }
+        
+        public void setLivesRemaining(int otherLives)
+        {
+            myLivesRemaining = otherLives;
+            announceLivesRemainingChange();
+            
+        }
+        
+        public void decrementLivesRemaining()
+        {
+            setLivesRemaining(livesRemaining() - 1);
+        }
 
         private void setRedHolePosition(int otherRow, int otherColumn)
         {
@@ -295,6 +314,13 @@ class HolesModel implements HolesModelObservable
                 currentObserver.updateRedHolePosition();
 
             }
+        
+        @Override
+        public void announceLivesRemainingChange()
+        {
+            for (HolesModelObserver currentObserver : observers())
+                currentObserver.updateLivesRemaining();
+        }
 
         @Override
         public void attach(HolesModelObserver anotherObserver)
