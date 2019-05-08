@@ -281,7 +281,7 @@ class ScoreComponent extends JLabel implements HolesModelObserver
             model().attach(this);
             
             setFont(new Font("Times New Roman", Font.BOLD, 30));
-            setForeground(Color.GREEN);
+            setForeground(Color.BLACK);
             
             setText("Score: " + model().score());
         }
@@ -364,7 +364,7 @@ class LivesComponent extends JLabel implements HolesModelObserver
             model().attach(this);
             
             setFont(new Font("Times New Roman", Font.BOLD, 30));
-            setForeground(Color.GREEN);
+            setForeground(Color.BLACK);
             
             setText("Lives Remaining: " + model().livesRemaining());
         }
@@ -395,6 +395,12 @@ class LivesComponent extends JLabel implements HolesModelObserver
         {
             setText("Lives Remaining: "+ model().livesRemaining());
             repaint();
+        }
+        
+        @Override
+        public void updateLevel()
+        {
+            
         }
     
 }
@@ -438,7 +444,7 @@ class LevelsComponent extends JLabel implements HolesModelObserver
             setModel(initialModel);
             model().attach(this);
             
-            setFont(new Font("Times New Roman", Font.BOLD, 40));
+            setFont(new Font("Times New Roman", Font.BOLD, 30));
             setForeground(Color.BLACK);
             
             setText("Level: " + model().score());
@@ -470,6 +476,12 @@ class LevelsComponent extends JLabel implements HolesModelObserver
         {
             setText("Level: " + model().level());
             repaint();
+        }
+        
+        @Override
+        public void updateLivesRemaining()
+        {
+            
         }
     
 }
@@ -670,6 +682,12 @@ class HolesComponent extends JComponent implements HolesModelObserver
                         //
                         // Pseudo-randomly move the red hole
                         //
+                        
+                            model().incrementCorrectClicks();
+                            if (model().correctClicks() % 10 == 0){
+                                model().incrementLevel();
+                               
+                            }
 
                             model().randomizeRedHolePosition();
 

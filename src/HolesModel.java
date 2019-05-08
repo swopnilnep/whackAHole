@@ -27,6 +27,7 @@ class HolesModel implements HolesModelObservable
         private int myLivesRemaining = 3;
 
         private int myLevel;
+        private int myCorrectClicks = 0;
 
         private ArrayList< ArrayList< Ellipse2D.Double > > myHoles;
         private int myRedHoleRow;
@@ -66,6 +67,11 @@ class HolesModel implements HolesModelObservable
         public int level()
         {
             return myLevel;
+        }
+        
+        public int correctClicks()
+        {
+            return myCorrectClicks;
         }
 
         public int score()
@@ -219,11 +225,23 @@ class HolesModel implements HolesModelObservable
         {
             setLivesRemaining(livesRemaining() - 1);
         }
+        
+        public void setCorrectClicks(int otherCorrectClicks)
+        {
+            myCorrectClicks = otherCorrectClicks;
+        }
+        
+        public void incrementCorrectClicks()
+        {
+            setCorrectClicks(correctClicks() + 1);
+        }
 
         public void incrementLevel()
         {
+           
             setLevel(level() + 1);
-            announceScoreChange();
+            announceLevelChange();
+            
         }
 
         private void setRedHolePosition(int otherRow, int otherColumn)
