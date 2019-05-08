@@ -203,8 +203,10 @@ class ProgramFrame extends JFrame
         // 
     
         setMainPanel(new JPanel());
-        mainPanel().setLayout(new BoxLayout(mainPanel(), BoxLayout.Y_AXIS));
-    
+        BorderLayout borderLayout = new BorderLayout();
+        mainPanel().setLayout(borderLayout);
+        
+
         // 
         // Create the Model
         // 
@@ -215,10 +217,18 @@ class ProgramFrame extends JFrame
         // 
         // Add Components to the Panel
         // 
+
+        JPanel holesPanel = new JPanel();
+        holesPanel.setLayout(new BoxLayout(holesPanel, BoxLayout.Y_AXIS));
+        holesPanel.add(new HolesComponent(model));
         
-        // mainPanel().add(new ScoreComponent(model));
-        mainPanel().add(new HolesComponent(model));
-        mainPanel().add(new ScoreComponent(model));
+        JPanel sidebarPanel = new JPanel();
+        sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.X_AXIS));
+        sidebarPanel.add(new ScoreComponent(model));
+        
+        mainPanel().add(holesPanel, BorderLayout.CENTER);
+        mainPanel().add(sidebarPanel, BorderLayout.EAST);
+        
 
         // 
         // Add the Panel to the Program Frame
@@ -440,49 +450,6 @@ class HolesComponent extends JComponent implements HolesModelObserver
 
                             }
 
-            }
-            
-
-    timeHandler myTimer = new Timer(model().myTimerDelay(), taskPerformer);
-
-
-    //
-    // Private Inner Classes
-    //
-
-
-        // Acts as a controller for the model
-        //
-
-    
-            private class timeHandler extends Timer
-            {
-                ActionListener taskPerformer = new ActionListener() {
-        
-                @Override
-                public void actionPerformed(ActionEvent evt) {  
-                    model().randomizeRedHolePosition();
-                    repaint();
-                    }
-                };
-                
-                // Private Mutators
-                
-                private void setActionListener(ActionListener other){
-                    
-                }
-                
-                public timeHandler(int initialDelay){
-                    
-                    super(initialDelay, taskPerformer);
-
-                }
-                
-                public timeHandler(int initialDelay, ActionListener other)
-                {
-                    
-                }
-                
             }
             
             
