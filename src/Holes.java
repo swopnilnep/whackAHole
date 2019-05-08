@@ -19,6 +19,10 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 public class Holes {
         public static void main(String[] args)
         {
@@ -158,7 +162,6 @@ public class Holes {
     
     }
 
-
 class ProgramFrame extends JFrame
 {
 
@@ -231,12 +234,37 @@ class ProgramFrame extends JFrame
         mainPanel().add(holesPanel, BorderLayout.CENTER);
         mainPanel().add(sidebarPanel, BorderLayout.EAST);
         
+        // Temporary JButton to Test Serializer functionality
+        JButton saveButton = new JButton("Save Game");
+
+        saveButton.addActionListener(new ActionListener () {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+                    try {
+                        saveState();    
+                    } catch (IOException ex) {
+                        ;
+                    }
+                    
+				}
+            });
+
+        sidebarPanel.add(saveButton);
 
         // 
         // Add the Panel to the Program Frame
         // 
 
         add(mainPanel());
+    }
+
+    public void saveState() throws IOException{
+        FileOutputStream fileOut = new FileOutputStream("Holes.dat");
+        ObjectOutput s = new ObjectOutputStream(fileOut);
+        s.writeObject("Today");
+        s.writeObject("This is the day");
+        s.flush();
     }
 
 }
@@ -322,7 +350,6 @@ class ScoreComponent extends JLabel implements HolesModelObserver
         }
     
 }
-
 
 class LivesComponent extends JLabel implements HolesModelObserver
 {
@@ -706,3 +733,4 @@ class HolesComponent extends JComponent implements HolesModelObserver
 
 
     }
+

@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.geom.*;
+
 import javax.swing.*;
 
 import java.util.ArrayList;
@@ -328,6 +329,12 @@ class HolesModel implements HolesModelObservable
             randomizeRedHolePosition();;
 
             }
+
+    // 
+    // Public Serialization Methods
+    // 
+
+
 
     ////
     //// Public Observation Methods
