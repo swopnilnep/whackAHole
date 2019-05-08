@@ -23,6 +23,8 @@ class HolesModel implements HolesModelObservable
 
         private int myScore;
         private int myScoreIncrement;
+        
+        private int myLivesRemaining = 3;
 
         private int myLevel;
 
@@ -79,6 +81,11 @@ class HolesModel implements HolesModelObservable
             return myScoreIncrement;
 
             }
+        
+        public int livesRemaining()
+        {
+            return myLivesRemaining;
+        }
 
         public int redHoleRow()
         {
@@ -200,6 +207,18 @@ class HolesModel implements HolesModelObservable
             setScore(score() + scoreIncrement());
 
             }
+        
+        public void setLivesRemaining(int otherLives)
+        {
+            myLivesRemaining = otherLives;
+            announceLivesRemainingChange();
+            
+        }
+        
+        public void decrementLivesRemaining()
+        {
+            setLivesRemaining(livesRemaining() - 1);
+        }
 
         public void incrementLevel()
         {
@@ -322,6 +341,13 @@ class HolesModel implements HolesModelObservable
 
             }
             
+        
+        @Override
+        public void announceLivesRemainingChange()
+        {
+            for (HolesModelObserver currentObserver : observers())
+                currentObserver.updateLivesRemaining();
+        }
 
         @Override
         public void attach(HolesModelObserver anotherObserver)

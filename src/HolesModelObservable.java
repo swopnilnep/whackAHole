@@ -13,6 +13,8 @@ public interface HolesModelObservable
         // Announce to all observer of this object that the position of the red hole has
         // changed
         //
+    
+    void announceLivesRemainingChange();
 
     void attach(HolesModelObserver anotherObserver);
         //
