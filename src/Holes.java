@@ -12,6 +12,7 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.io.File;
 import javax.swing.*;
+import javax.swing.Timer;
 
 import java.util.Scanner;
 import java.util.Random;
@@ -224,6 +225,7 @@ class ProgramFrame extends JFrame
         JPanel holesPanel = new JPanel();
         holesPanel.setLayout(new BoxLayout(holesPanel, BoxLayout.Y_AXIS));
         holesPanel.add(new HolesComponent(model));
+        holesPanel.setBackground(model.randomBackgroundColor());
         
         JPanel sidebarPanel = new JPanel();
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
@@ -249,8 +251,26 @@ class ProgramFrame extends JFrame
                     
 				}
             });
+        
+        JButton muteButton = new JButton("Toggle Sounds");
+        JLabel muteStatus = new JLabel("Sound is not muted");
+        
+        muteButton.addActionListener(new ActionListener () {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                model.toggleMute();
+                if (model.isMuted())
+                    muteStatus.setText("Sound is muted");
+                else
+                    muteStatus.setText("Sound is not muted");
+            }
+        });
 
         sidebarPanel.add(saveButton);
+        sidebarPanel.add(muteButton);
+        sidebarPanel.add(muteStatus);
+        
+
 
         // 
         // Add the Panel to the Program Frame
@@ -557,9 +577,9 @@ class HolesComponent extends JComponent implements HolesModelObserver
             model().randomizeRedHolePosition();
             repaint();
             }
+
         };
-        int myDelay = 1000;
-        Timer myTimer = new Timer(myDelay, taskPerformer);
+        Timer myTimer = new Timer(1000, taskPerformer);
         
         
         public void playSound(String soundName){
@@ -632,7 +652,9 @@ class HolesComponent extends JComponent implements HolesModelObserver
         @Override
         public void updateLevel()
         {
-            playSound(model().wrongSound());
+            playSound(model().levelUpSound());
+            //setBackground(model().randomBackgroundColor());
+            repaint();
         }
 
     //
@@ -654,7 +676,7 @@ class HolesComponent extends JComponent implements HolesModelObserver
                     final double holeHeight =
                         ((double) getHeight()) / model().numberOfRows();
 
-
+                    
                     for (int row = 0; row < model().numberOfRows(); ++ row)
                         for (int column = 0; column < model().numberOfColumns(); ++ column) {
 
@@ -736,8 +758,8 @@ class HolesComponent extends JComponent implements HolesModelObserver
                     else{
                         if (!model().isMuted()){
                             playSound(model().wrongSound());
-                            model().decrementLivesRemaining();
                         }
+                        model().decrementLivesRemaining();
                     }
 
                     }

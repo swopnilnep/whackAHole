@@ -45,6 +45,7 @@ class HolesModel implements HolesModelObservable
         private Boolean soundIsMuted = false;
         private final String OUR_CORRECT_SOUND = "sounds/correctSound.wav";
         private final String OUR_WRONG_SOUND = "sounds/wrongSound.wav";
+        private final String OUR_LEVEL_UP_SOUND = "sounds/levelUp.wav";
         
         private int myTimerDelay = 1000;
 
@@ -166,6 +167,11 @@ class HolesModel implements HolesModelObservable
             return OUR_WRONG_SOUND;
         }
         
+        public String levelUpSound()
+        {
+            return OUR_LEVEL_UP_SOUND;
+        }
+        
         public int timerDelay()
         {
             return myTimerDelay;
@@ -234,6 +240,7 @@ class HolesModel implements HolesModelObservable
         public void decrementLivesRemaining()
         {
             setLivesRemaining(livesRemaining() - 1);
+                
         }
         
         public void setCorrectClicks(int otherCorrectClicks)
@@ -251,7 +258,8 @@ class HolesModel implements HolesModelObservable
            
             setLevel(level() + 1);
             setScoreIncrement(scoreIncrement() + 5);
-            
+            int newTimerDelay = (int) (timerDelay() * 0.8);
+            setTimerDelay(newTimerDelay);
             announceLevelChange();
             
         }
@@ -260,6 +268,7 @@ class HolesModel implements HolesModelObservable
         {
             myTimerDelay = otherDelay;
         }
+        
 
         private void setRedHolePosition(int otherRow, int otherColumn)
         {
@@ -292,6 +301,16 @@ class HolesModel implements HolesModelObservable
         {
             soundIsMuted = !soundIsMuted;
         }
+        
+        public Color randomBackgroundColor()
+        {
+            float red = randomNumber().nextFloat();
+            float green = randomNumber().nextFloat();
+            float blue = randomNumber().nextFloat();
+            Color randomColor = new Color(red, green, blue);
+            return randomColor;
+        }
+        
 
        
 
