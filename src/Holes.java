@@ -272,7 +272,7 @@ class OptionsComponent extends JOptionPane implements HolesModelObserver
 
         }
 
-        private HolesModel muteStatus()
+        private MuteLabel muteStatus()
         {
 
             return myMuteStatusLabel;
@@ -293,7 +293,7 @@ class OptionsComponent extends JOptionPane implements HolesModelObserver
         private void setModel(HolesModel otherModel)
         {
 
-            returm myModel;
+            myModel = otherModel;
 
         }
 
@@ -415,9 +415,7 @@ class OptionsComponent extends JOptionPane implements HolesModelObserver
         @Override
         public void updateScore()
         {
-            setText("Score: " + model().score());
-            
-            repaint();
+
         }
         
         @Override
