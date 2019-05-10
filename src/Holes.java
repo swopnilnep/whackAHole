@@ -320,7 +320,7 @@ class OptionsComponent extends JPanel implements HolesModelObserver
 
             setModel(initialModel);
             model().attach(this);
-            
+            this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             // 
             // Add Components to the Options Pane
             // 
