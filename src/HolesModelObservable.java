@@ -3,6 +3,8 @@ public interface HolesModelObservable
 
     void announceLevelChange();
 
+    void announceSoundStatusChange();
+
     void announceScoreChange();
         //
         // Announce to all observer of this object that the score has changed

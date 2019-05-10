@@ -336,6 +336,7 @@ class HolesModel implements HolesModelObservable
         public void toggleMute()
         {
             soundIsMuted = !soundIsMuted;
+            announceSoundStatusChange();
         }
         
         public Color randomBackgroundColor()
@@ -471,6 +472,13 @@ class HolesModel implements HolesModelObservable
         {
             for (HolesModelObserver currentObserver : observers())
                 currentObserver.updateLivesRemaining();
+        }
+
+        @Override
+        public void announceSoundStatusChange()
+        {
+            for (HolesModelObserver currentObserver : observers())
+            currentObserver.updateSoundStatus();
         }
 
         @Override
