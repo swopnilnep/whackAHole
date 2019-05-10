@@ -249,7 +249,7 @@ class ProgramFrame extends JFrame
         add(mainPanel());
     }
 }
-class OptionsComponent extends JOptionPane implements HolesModelObserver
+class OptionsComponent extends JPanel implements HolesModelObserver
 {
     // 
     // Private Fields
@@ -324,10 +324,12 @@ class OptionsComponent extends JOptionPane implements HolesModelObserver
             // 
             // Add Components to the Options Pane
             // 
-       
-            
+
             setMuteStatusLabel(new MuteLabel());
-            setMuteButton(new MuteButton());
+            setMuteButton(new MuteButton("Mute/Unmute"));
+
+            add(muteButton());
+            add(muteStatus());
 
         }
 
@@ -383,9 +385,11 @@ class OptionsComponent extends JOptionPane implements HolesModelObserver
             // Public Constructors
             // 
 
-                public MuteButton()
+                public MuteButton(String text)
                 {
-                    addActionListener(new ActionListener () {
+                    
+                    this.setText(text);
+                    this.addActionListener(new ActionListener () {
                         
                         @Override
                         public void actionPerformed(ActionEvent e){
