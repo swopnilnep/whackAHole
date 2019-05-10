@@ -268,8 +268,7 @@ class ProgramFrame extends JFrame
 
         sidebarPanel.add(saveButton);
         sidebarPanel.add(muteButton);
-        sidebarPanel.add(muteStatus);
-        
+        sidebarPanel.add(muteStatus);    
 
 
         // 
@@ -569,18 +568,6 @@ class HolesComponent extends JComponent implements HolesModelObserver
     // Methods
     //
         
-       
-        ActionListener taskPerformer = new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent evt) {  
-            model().randomizeRedHolePosition();
-            repaint();
-            }
-
-        };
-        Timer myTimer = new Timer(1000, taskPerformer);
-        
         
         public void playSound(String soundName){
                 try{
@@ -652,8 +639,9 @@ class HolesComponent extends JComponent implements HolesModelObserver
         @Override
         public void updateLevel()
         {
-            playSound(model().levelUpSound());
-            //setBackground(model().randomBackgroundColor());
+            if (!model().isMuted())
+                playSound(model().levelUpSound());
+            setBackground(model().randomBackgroundColor());
             repaint();
         }
 
@@ -668,7 +656,7 @@ class HolesComponent extends JComponent implements HolesModelObserver
             @Override
             public void paintComponent(Graphics canvas)
             {
-                myTimer.start();
+                model().timer().start();
                 final Graphics2D canvas2D = ((Graphics2D) canvas);
 
                     final double holeWidth =
@@ -730,12 +718,12 @@ class HolesComponent extends JComponent implements HolesModelObserver
                     if (model().hole(
                             model().redHoleRow(),
                             model().redHoleColumn()
-                            ).contains(event.getPoint())) {
+                            ).contains(event.getPoint()) && !model().gameIsOver()) {
 
                         //
                         // Update the score with the additional points
                         //
-                            myTimer.restart();
+                            model().timer().restart();
                             model().setScore(model().score() + model().scoreIncrement());
                             
                             if (!model().isMuted()){
@@ -755,7 +743,7 @@ class HolesComponent extends JComponent implements HolesModelObserver
 
                         }
                     
-                    else{
+                    else if (!model().gameIsOver()){
                         if (!model().isMuted()){
                             playSound(model().wrongSound());
                         }

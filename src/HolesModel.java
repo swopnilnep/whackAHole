@@ -7,6 +7,7 @@ import java.io.File;
 import javax.swing.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -48,6 +49,20 @@ class HolesModel implements HolesModelObservable
         private final String OUR_LEVEL_UP_SOUND = "sounds/levelUp.wav";
         
         private int myTimerDelay = 1000;
+        
+        private Boolean gameIsOver = false;
+        
+        ActionListener taskPerformer = new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent evt) {  
+            randomizeRedHolePosition();
+            }
+
+        };
+        private Timer myTimer = new Timer(myTimerDelay, taskPerformer);
+        
+        private int[] myHighScoreArray = new int[16];
 
     ////
     //// Private Accessors
@@ -177,6 +192,20 @@ class HolesModel implements HolesModelObservable
             return myTimerDelay;
         }
         
+        public Timer timer()
+        {
+            return myTimer;
+        }
+        
+        public boolean gameIsOver()
+        {
+            return gameIsOver;
+        }
+        
+        public int[] highScores()
+        {
+            return myHighScoreArray;
+        }
         
         
 
@@ -239,7 +268,16 @@ class HolesModel implements HolesModelObservable
         
         public void decrementLivesRemaining()
         {
-            setLivesRemaining(livesRemaining() - 1);
+            if (livesRemaining() > 0)
+                setLivesRemaining(livesRemaining() - 1);
+            else
+            {
+                if (!gameIsOver())
+                {    
+                    gameOverProcedure();
+                }
+            }
+                
                 
         }
         
@@ -258,8 +296,6 @@ class HolesModel implements HolesModelObservable
            
             setLevel(level() + 1);
             setScoreIncrement(scoreIncrement() + 5);
-            int newTimerDelay = (int) (timerDelay() * 0.8);
-            setTimerDelay(newTimerDelay);
             announceLevelChange();
             
         }
@@ -310,6 +346,37 @@ class HolesModel implements HolesModelObservable
             Color randomColor = new Color(red, green, blue);
             return randomColor;
         }
+        
+        public void detachAll()
+        {
+            for (HolesModelObserver currentObserver : observers())
+                detach(currentObserver);
+        }
+        
+        public void setGameOver(boolean otherGameStatus)
+        {
+            gameIsOver = otherGameStatus;
+        }
+        
+        public void gameOverProcedure()
+        {
+            detachAll();
+            setGameOver(true);
+            timer().stop();
+            updateHighScores();
+        }
+        
+        public void updateHighScores()
+        {
+            int lowestHighScore = highScores()[0];
+            if (score() > lowestHighScore)
+            {
+                highScores()[0] = score();
+                Arrays.sort(highScores());
+            }
+                
+        }
+        
         
 
        
