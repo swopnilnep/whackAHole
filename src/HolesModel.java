@@ -36,10 +36,10 @@ class HolesModel implements HolesModelObservable
         private int myScore;
         private int myScoreIncrement;
         
-        private int myLivesRemaining = 3;
+        private int myLivesRemaining;
 
-        private int myLevel = 1;
-        private int myCorrectClicks = 0;
+        private int myLevel;
+        private int myCorrectClicks;
 
         private ArrayList< ArrayList< Ellipse2D.Double > > myHoles;
         private int myRedHoleRow;
@@ -51,6 +51,7 @@ class HolesModel implements HolesModelObservable
         private final String OUR_CORRECT_SOUND = "sounds/correctSound.wav";
         private final String OUR_WRONG_SOUND = "sounds/wrongSound.wav";
         private final String OUR_LEVEL_UP_SOUND = "sounds/levelUp.wav";
+        private final String OUR_RESET_SOUND = "sound/resetGame.wav";
         
         private int myTimerDelay = 1000;
         
@@ -58,9 +59,10 @@ class HolesModel implements HolesModelObservable
         
         ActionListener taskPerformer = new ActionListener() {
 
-        @Override
-        public void actionPerformed(ActionEvent evt) {  
-            randomizeRedHolePosition();
+            @Override
+            public void actionPerformed(ActionEvent evt) 
+            {  
+                randomizeRedHolePosition();
             }
 
         };
@@ -224,7 +226,7 @@ class HolesModel implements HolesModelObservable
 
             }
 
-        private void setHoles(ArrayList< ArrayList< Ellipse2D.Double > > otherHoles)
+        private void setHoles( ArrayList< ArrayList < Ellipse2D.Double > > otherHoles)
         {
 
             myHoles = otherHoles;
@@ -234,6 +236,7 @@ class HolesModel implements HolesModelObservable
         private void setLevel(int other)
         {
             myLevel = other;
+            announceLevelChange();
         }
 
     //
@@ -265,6 +268,7 @@ class HolesModel implements HolesModelObservable
         
         public void setLivesRemaining(int otherLives)
         {
+
             myLivesRemaining = otherLives;
             announceLivesRemainingChange();
             
@@ -272,7 +276,7 @@ class HolesModel implements HolesModelObservable
         
         public void decrementLivesRemaining()
         {
-            if (livesRemaining() > 0)
+            if (livesRemaining() >= 1)
                 setLivesRemaining(livesRemaining() - 1);
             else
             {
@@ -308,7 +312,6 @@ class HolesModel implements HolesModelObservable
         {
             myTimerDelay = otherDelay;
         }
-        
 
         private void setRedHolePosition(int otherRow, int otherColumn)
         {
@@ -365,10 +368,11 @@ class HolesModel implements HolesModelObservable
         
         public void gameOverProcedure()
         {
-            detachAll();
             setGameOver(true);
             timer().stop();
-            updateHighScores();
+            // updateHighScores();
+            System.out.println("Game Over");
+            // Instead of detaching, announce the change and show game over text
         }
         
         public void updateHighScores()
@@ -384,7 +388,7 @@ class HolesModel implements HolesModelObservable
         
 
     // 
-    // Public Writing Methods
+    // Public Methods
     // 
 
         public void saveProperties() {
@@ -405,11 +409,12 @@ class HolesModel implements HolesModelObservable
                 props.setProperty("score", Integer.toString(score()));
                 props.setProperty("scoreIncrement", Integer.toString(scoreIncrement()));
                 props.setProperty("livesRemaining", Integer.toString(livesRemaining()));
+                props.setProperty("timerDelay", Integer.toString(timerDelay()));
+
                 props.setProperty("redHoleRow", Integer.toString(redHoleRow()));
                 props.setProperty("redHoleColumn", Integer.toString(redHoleColumn()));
                 props.setProperty("numberOfRows", Integer.toString(numberOfRows()));
                 props.setProperty("numberOfColumns", Integer.toString(numberOfColumns()));
-                props.setProperty("timerDelay", Integer.toString(timerDelay()));
                 
                 props.setProperty("gameIsOver", Boolean.toString(gameIsOver()));
                 props.setProperty("isMuted", Boolean.toString(isMuted()));
@@ -428,8 +433,25 @@ class HolesModel implements HolesModelObservable
             }
         }
 
+        public void resetModel()
+        {
+
+            if (!gameIsOver()){
+
+                timer().start();
+                setLevel(0);
+                setCorrectClicks(0);
+                setScore(0);
+                setScoreIncrement(5);
+                setLivesRemaining(3);
+                setTimerDelay(1000);
+
+            }
+
+        }
+
     //
-    // Public Ctors
+    // Public Constructors
     //
 
         HolesModel()
@@ -437,22 +459,20 @@ class HolesModel implements HolesModelObservable
 
             this(ourDefaultNumberOfRows, ourDefaultNumberOfColumns);
 
-            }
+        }
 
         HolesModel(int initialNumberOfRowsAndColumns)
         {
 
             this(initialNumberOfRowsAndColumns, initialNumberOfRowsAndColumns);
 
-            }
+        }
 
         HolesModel(int initialNumberOfRows, int initialNumberOfColumns)
         {
 
             setObservers(new ArrayList< HolesModelObserver >());
-
-            setScore(0);
-            setScoreIncrement(5);
+            resetModel();
             setPseudoRandomNumberGenerator(new Random());
 
             //
@@ -461,7 +481,7 @@ class HolesModel implements HolesModelObservable
             // zero-sized ellipses
             //
 
-                myHoles = new ArrayList< ArrayList< Ellipse2D.Double > >();
+            myHoles = new ArrayList< ArrayList< Ellipse2D.Double > >();
 
                 for (int row = 0; row < initialNumberOfRows; ++ row) {
 
@@ -474,13 +494,7 @@ class HolesModel implements HolesModelObservable
 
             randomizeRedHolePosition();;
 
-            }
-
-    // 
-    // Public Serialization Methods
-    // 
-
-        
+        }
 
     //
     // Public Observation Methods
@@ -512,7 +526,6 @@ class HolesModel implements HolesModelObservable
 
             }
             
-        
         @Override
         public void announceLivesRemainingChange()
         {

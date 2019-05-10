@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 public class Holes {
-        public static void main(String[] args)
+        public static void main(String[] commandLineArguments)
         {
 
             // 
@@ -161,7 +161,6 @@ public class Holes {
         }
     
     }
-
 class ProgramFrame extends JFrame
 {
 
@@ -259,10 +258,16 @@ class OptionsComponent extends JPanel implements HolesModelObserver
         private MuteButton myMuteButton;
         private SaveButton mySaveStateButton;
         private LoadButton myLoadStateButton;
+        private ResetButton myResetButton;
 
     // 
     // Private Accessors
     // 
+
+        private ResetButton resetButton()
+        {
+            return myResetButton;
+        }
 
         private HolesModel model()
         {
@@ -302,6 +307,11 @@ class OptionsComponent extends JPanel implements HolesModelObserver
     // 
     // Private Mutators
     // 
+
+        private void setResetButton(ResetButton otherButton)
+        {
+            myResetButton = otherButton;
+        }
 
         private void setModel(HolesModel otherModel)
         {
@@ -354,18 +364,31 @@ class OptionsComponent extends JPanel implements HolesModelObserver
             // 
 
             setMuteStatusLabel(new MuteLabel());
-            setMuteButton(new MuteButton("Mute/Unmute"));
+            setMuteButton(new MuteButton());
             setSaveStateButton(new SaveButton());
             setLoadStateButton(new LoadButton());
+            setResetButton(new ResetButton());
 
             // 
             // Add buttons to the options pane
             // 
 
+            // Add Spacer
+            add(Box.createRigidArea(new Dimension(4, 1)));
+            
+            // Buttons
             add(muteButton());
-            add(muteStatus());
             add(saveStateButton());
             add(loadStateButton());
+            add(resetButton());
+            
+            // Add Spacer
+            add(Box.createVerticalGlue());
+            
+            // Status Element(s)
+            add(muteStatus());
+
+            add(Box.createRigidArea(new Dimension(4, 1)));
 
         }
 
@@ -373,6 +396,44 @@ class OptionsComponent extends JPanel implements HolesModelObserver
     // Internal Classes
     // 
 
+        class ResetButton extends JButton
+        {
+            // 
+            // Public Constructors
+            // 
+
+            public ResetButton()
+            {
+
+                this.setText("Reset");
+                this.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        model().resetModel();
+                        playSound("sounds/resetGame.wav");
+
+                    }
+
+                });
+            }
+
+            public void playSound(String soundName){
+                try{
+
+                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+                    Clip clip = AudioSystem.getClip();
+                    clip.open(audioInputStream);
+                    clip.start();
+
+                }
+
+                catch(Exception ex){
+                    System.out.println("Error playing sound.");
+                }
+            }
+        }
         class MuteLabel extends JLabel
         {
 
@@ -413,7 +474,6 @@ class OptionsComponent extends JPanel implements HolesModelObserver
                 }
             
         }
-
         class LoadButton extends JButton
         {
 
@@ -462,11 +522,10 @@ class OptionsComponent extends JPanel implements HolesModelObserver
         }
         class MuteButton extends JButton
         {
-
-                public MuteButton(String text)
+                public MuteButton()
                 {
                     
-                    this.setText(text);
+                    this.setText("Mute/Unmute");
                     this.addActionListener(new ActionListener () {
                         
                         @Override
