@@ -1,0 +1,14 @@
+#User properties
+#Thu May 09 20:21:28 CDT 2019
+scoreIncrement=5
+level=1
+correctClicks=0
+gameIsOver=false
+score=0
+numberOfColumns=5
+redHoleColumn=4
+timerDelay=1000
+livesRemaining=2
+numberOfRows=5
+redHoleRow=0
+isMuted=false

@@ -9,6 +9,10 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Properties;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -74,14 +78,14 @@ class HolesModel implements HolesModelObservable
 
             return myObservers;
 
-            }
+        }
 
         private ArrayList< ArrayList< Ellipse2D.Double > > holes()
         {
 
             return myHoles;
 
-            }
+        }
 
     //
     // Public Accessors
@@ -102,14 +106,14 @@ class HolesModel implements HolesModelObservable
 
             return myScore;
 
-            }
+        }
 
         public int scoreIncrement()
         {
 
             return myScoreIncrement;
 
-            }
+        }
         
         public int livesRemaining()
         {
@@ -121,49 +125,49 @@ class HolesModel implements HolesModelObservable
 
             return myRedHoleRow;
 
-            }
+        }
 
         public int redHoleColumn()
         {
 
             return myRedHoleColumn;
 
-            }
+        }
 
         public Ellipse2D.Double hole(int row, int column)
         {
 
             return holes().get(row).get(column);
 
-            }
+        }
 
         public int numberOfRows()
         {
 
             return holes().size();
 
-            }
+        }
 
         public int numberOfColumns()
         {
 
             return holes().get(0).size();
 
-            }
+        }
 
         public Ellipse2D.Double redHole()
         {
 
             return holes().get(redHoleRow()).get(redHoleColumn());
 
-            }
+        }
 
         public Random randomNumber()
         {
 
             return myPseudoRandomNumberGenerator;
 
-            }
+        }
         
         public Boolean isMuted()
         {
@@ -378,9 +382,51 @@ class HolesModel implements HolesModelObservable
                 
         }
         
-        
 
-       
+    // 
+    // Public Writing Methods
+    // 
+
+        public void saveProperties() {
+            try {
+                
+                // 
+                // Create a properties file
+                // 
+
+                Properties props = new Properties();
+
+                // 
+                // Set Properties
+                // 
+
+                props.setProperty("level", Integer.toString(level()));
+                props.setProperty("correctClicks", Integer.toString(correctClicks()));
+                props.setProperty("score", Integer.toString(score()));
+                props.setProperty("scoreIncrement", Integer.toString(scoreIncrement()));
+                props.setProperty("livesRemaining", Integer.toString(livesRemaining()));
+                props.setProperty("redHoleRow", Integer.toString(redHoleRow()));
+                props.setProperty("redHoleColumn", Integer.toString(redHoleColumn()));
+                props.setProperty("numberOfRows", Integer.toString(numberOfRows()));
+                props.setProperty("numberOfColumns", Integer.toString(numberOfColumns()));
+                props.setProperty("timerDelay", Integer.toString(timerDelay()));
+                
+                props.setProperty("gameIsOver", Boolean.toString(gameIsOver()));
+                props.setProperty("isMuted", Boolean.toString(isMuted()));
+                
+                // 
+                // Create and Export to a new file
+                // 
+                
+                File f = new File("properties.txt");
+                OutputStream out = new FileOutputStream( f );
+                
+                props.store(out, "User preferences for loading and saving game states");
+            }
+            catch (Exception e ) {
+                e.printStackTrace();
+            }
+        }
 
     //
     // Public Ctors

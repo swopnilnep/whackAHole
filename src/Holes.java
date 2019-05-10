@@ -12,7 +12,6 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import java.io.File;
 import javax.swing.*;
-import javax.swing.Timer;
 
 import java.util.Scanner;
 import java.util.Random;
@@ -258,8 +257,8 @@ class OptionsComponent extends JPanel implements HolesModelObserver
         private HolesModel myModel;
         private MuteLabel myMuteStatusLabel;
         private MuteButton myMuteButton;
-        private StateSaveButton myStateSaveButton;
-        private StateRestoreButton myStateRestoreButton;
+        private SaveButton mySaveStateButton;
+        private LoadButton myLoadStateButton;
 
     // 
     // Private Accessors
@@ -283,6 +282,20 @@ class OptionsComponent extends JPanel implements HolesModelObserver
         {
 
             return myMuteButton;
+
+        }
+
+        private SaveButton saveStateButton()
+        {
+
+            return mySaveStateButton;
+
+        }
+
+        private LoadButton loadStateButton()
+        {
+
+            return myLoadStateButton;
 
         }
 
@@ -311,6 +324,20 @@ class OptionsComponent extends JPanel implements HolesModelObserver
 
         }
 
+        private void setSaveStateButton(SaveButton otherSaveStateButton)
+        {
+
+            mySaveStateButton = otherSaveStateButton;
+
+        }
+
+        private void setLoadStateButton(LoadButton otherLoadStateButton)
+        {
+
+            myLoadStateButton = otherLoadStateButton;
+            
+        }
+
     //
     // Public Constructors
     // 
@@ -318,18 +345,27 @@ class OptionsComponent extends JPanel implements HolesModelObserver
         public OptionsComponent(HolesModel initialModel)
         {
 
+            this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             setModel(initialModel);
             model().attach(this);
             
             // 
-            // Add Components to the Options Pane
+            // Set Components
             // 
 
             setMuteStatusLabel(new MuteLabel());
             setMuteButton(new MuteButton("Mute/Unmute"));
+            setSaveStateButton(new SaveButton());
+            setLoadStateButton(new LoadButton());
+
+            // 
+            // Add buttons to the options pane
+            // 
 
             add(muteButton());
             add(muteStatus());
+            add(saveStateButton());
+            add(loadStateButton());
 
         }
 
@@ -378,12 +414,54 @@ class OptionsComponent extends JPanel implements HolesModelObserver
             
         }
 
-        class MuteButton extends JButton
+        class LoadButton extends JButton
         {
 
             // 
             // Public Constructors
             // 
+
+                public LoadButton()
+                {
+
+                    this.setText("Load");
+                    this.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                            ;
+
+                        }
+
+                    });
+                }
+        }
+        class SaveButton extends JButton
+        {
+
+            // 
+            // Public Constructors
+            // 
+
+                public SaveButton()
+                {
+
+                    this.setText("Save");
+                    this.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                            model().saveProperties();
+
+                        }
+
+                    });
+                }
+        }
+        class MuteButton extends JButton
+        {
 
                 public MuteButton(String text)
                 {
@@ -393,22 +471,14 @@ class OptionsComponent extends JPanel implements HolesModelObserver
                         
                         @Override
                         public void actionPerformed(ActionEvent e){
+
                             model().toggleMute();
+
                         }
 
                     });
 
                 }
-
-        }
-
-        class StateSaveButton extends JButton
-        {
-
-        }
-
-        class StateRestoreButton extends JButton
-        {
 
         }
 
@@ -560,7 +630,7 @@ class LivesComponent extends JLabel implements HolesModelObserver
 
             myModel = otherModel;
 
-            }
+        }
         
     //
     // Public Ctors
@@ -574,7 +644,7 @@ class LivesComponent extends JLabel implements HolesModelObserver
             setFont(new Font("Times New Roman", Font.BOLD, 30));
             setForeground(Color.BLACK);
             
-            setText("Lives Remaining: " + model().livesRemaining());
+            setText("Lives: " + model().livesRemaining());
         }
         
     //
@@ -601,7 +671,7 @@ class LivesComponent extends JLabel implements HolesModelObserver
         @Override
         public void updateLivesRemaining()
         {
-            setText("Lives Remaining: "+ model().livesRemaining());
+            setText("Lives: "+ model().livesRemaining());
             repaint();
         }
         
