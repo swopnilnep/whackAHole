@@ -241,44 +241,6 @@ class ProgramFrame extends JFrame
 
         mainPanel().add(holesPanel, BorderLayout.CENTER);
         mainPanel().add(sidebarPanel, BorderLayout.EAST);
-<<<<<<< HEAD
-=======
-        
-        // Temporary JButton to Test Serializer functionality
-        JButton saveButton = new JButton("Save Game");
-
-        saveButton.addActionListener(new ActionListener () {
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-                    try {
-                        saveState();    
-                    } catch (IOException ex) {
-                        ;
-                    }
-                    
-				}
-            });
-        
-        JButton muteButton = new JButton("Toggle Sounds");
-        JLabel muteStatus = new JLabel("Sound is not muted");
-        
-        muteButton.addActionListener(new ActionListener () {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                model.toggleMute();
-                if (model.isMuted())
-                    muteStatus.setText("Sound is muted");
-                else
-                    muteStatus.setText("Sound is not muted");
-            }
-        });
-
-        sidebarPanel.add(saveButton);
-        sidebarPanel.add(muteButton);
-        sidebarPanel.add(muteStatus);    
-
->>>>>>> 2a9c28a84b78d4c4b8896fc98621a4fa8edf0990
 
         // 
         // Add the Panel to the Program Frame
