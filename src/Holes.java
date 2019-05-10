@@ -241,6 +241,44 @@ class ProgramFrame extends JFrame
 
         mainPanel().add(holesPanel, BorderLayout.CENTER);
         mainPanel().add(sidebarPanel, BorderLayout.EAST);
+<<<<<<< HEAD
+=======
+        
+        // Temporary JButton to Test Serializer functionality
+        JButton saveButton = new JButton("Save Game");
+
+        saveButton.addActionListener(new ActionListener () {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+                    try {
+                        saveState();    
+                    } catch (IOException ex) {
+                        ;
+                    }
+                    
+				}
+            });
+        
+        JButton muteButton = new JButton("Toggle Sounds");
+        JLabel muteStatus = new JLabel("Sound is not muted");
+        
+        muteButton.addActionListener(new ActionListener () {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                model.toggleMute();
+                if (model.isMuted())
+                    muteStatus.setText("Sound is muted");
+                else
+                    muteStatus.setText("Sound is not muted");
+            }
+        });
+
+        sidebarPanel.add(saveButton);
+        sidebarPanel.add(muteButton);
+        sidebarPanel.add(muteStatus);    
+
+>>>>>>> 2a9c28a84b78d4c4b8896fc98621a4fa8edf0990
 
         // 
         // Add the Panel to the Program Frame
@@ -726,18 +764,6 @@ class HolesComponent extends JComponent implements HolesModelObserver
     // Methods
     //
         
-       
-        ActionListener taskPerformer = new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent evt) {  
-            model().randomizeRedHolePosition();
-            repaint();
-            }
-
-        };
-        Timer myTimer = new Timer(1000, taskPerformer);
-        
         
         public void playSound(String soundName){
                 try{
@@ -809,8 +835,9 @@ class HolesComponent extends JComponent implements HolesModelObserver
         @Override
         public void updateLevel()
         {
-            playSound(model().levelUpSound());
-            //setBackground(model().randomBackgroundColor());
+            if (!model().isMuted())
+                playSound(model().levelUpSound());
+            setBackground(model().randomBackgroundColor());
             repaint();
         }
 
@@ -825,7 +852,7 @@ class HolesComponent extends JComponent implements HolesModelObserver
             @Override
             public void paintComponent(Graphics canvas)
             {
-                myTimer.start();
+                model().timer().start();
                 final Graphics2D canvas2D = ((Graphics2D) canvas);
 
                     final double holeWidth =
@@ -887,12 +914,12 @@ class HolesComponent extends JComponent implements HolesModelObserver
                     if (model().hole(
                             model().redHoleRow(),
                             model().redHoleColumn()
-                            ).contains(event.getPoint())) {
+                            ).contains(event.getPoint()) && !model().gameIsOver()) {
 
                         //
                         // Update the score with the additional points
                         //
-                            myTimer.restart();
+                            model().timer().restart();
                             model().setScore(model().score() + model().scoreIncrement());
                             
                             if (!model().isMuted()){
@@ -912,7 +939,7 @@ class HolesComponent extends JComponent implements HolesModelObserver
 
                         }
                     
-                    else{
+                    else if (!model().gameIsOver()){
                         if (!model().isMuted()){
                             playSound(model().wrongSound());
                         }
