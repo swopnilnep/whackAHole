@@ -203,74 +203,44 @@ class ProgramFrame extends JFrame
         setTitle(OUR_TITLE);
 
         // 
-        // Set Main Panel to Hold all Components
+        // Create the Model
+        // 
+
+        HolesModel model = new HolesModel(initialNumberOfRows, initialNumberOfColumns);
+    
+        // 
+        // Set Main Panel to Hold all Sub-Panels
         // 
     
         setMainPanel(new JPanel());
         BorderLayout borderLayout = new BorderLayout();
         mainPanel().setLayout(borderLayout);
         
-
         // 
-        // Create the Model
-        // 
-
-        HolesModel model =
-                    new HolesModel(initialNumberOfRows, initialNumberOfColumns);
-    
-        // 
-        // Add Components to the Panel
+        // Set Sub-panels to Hold all the Components
         // 
 
         JPanel holesPanel = new JPanel();
+        JPanel sidebarPanel = new JPanel();
+
+        // Setup the Holes Panel
         holesPanel.setLayout(new BoxLayout(holesPanel, BoxLayout.Y_AXIS));
         holesPanel.add(new HolesComponent(model));
         holesPanel.setBackground(model.randomBackgroundColor());
-        
-        JPanel sidebarPanel = new JPanel();
+
+        // Setup the Sidebar Panel Layout and Components
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
         sidebarPanel.add(new ScoreComponent(model));
         sidebarPanel.add(new LevelsComponent(model));
         sidebarPanel.add(new LivesComponent(model));
+        sidebarPanel.add(new OptionsComponent(model));
         
+        // 
+        // Add Components and Sub-Components to the Panels
+        // 
+
         mainPanel().add(holesPanel, BorderLayout.CENTER);
         mainPanel().add(sidebarPanel, BorderLayout.EAST);
-        
-        // Temporary JButton to Test Serializer functionality
-        JButton saveButton = new JButton("Save Game");
-
-        saveButton.addActionListener(new ActionListener () {
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-                    try {
-                        saveState();    
-                    } catch (IOException ex) {
-                        ;
-                    }
-                    
-				}
-            });
-        
-        JButton muteButton = new JButton("Toggle Sounds");
-        JLabel muteStatus = new JLabel("Sound is not muted");
-        
-        muteButton.addActionListener(new ActionListener () {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                model.toggleMute();
-                if (model.isMuted())
-                    muteStatus.setText("Sound is muted");
-                else
-                    muteStatus.setText("Sound is not muted");
-            }
-        });
-
-        sidebarPanel.add(saveButton);
-        sidebarPanel.add(muteButton);
-        sidebarPanel.add(muteStatus);
-        
-
 
         // 
         // Add the Panel to the Program Frame
@@ -278,17 +248,207 @@ class ProgramFrame extends JFrame
 
         add(mainPanel());
     }
+}
+class OptionsComponent extends JOptionPane implements HolesModelObserver
+{
+    // 
+    // Private Fields
+    // 
 
-    public void saveState() throws IOException{
-        FileOutputStream fileOut = new FileOutputStream("Holes.dat");
-        ObjectOutput s = new ObjectOutputStream(fileOut);
-        s.writeObject("Today");
-        s.writeObject("This is the day");
-        s.flush();
-    }
+        private HolesModel myModel;
+        private MuteLabel myMuteStatusLabel;
+        private MuteButton myMuteButton;
+        private StateSaveButton myStateSaveButton;
+        private StateRestoreButton myStateRestoreButton;
+
+    // 
+    // Private Accessors
+    // 
+
+        private HolesModel model()
+        {
+            
+            return myModel;
+
+        }
+
+        private HolesModel muteStatus()
+        {
+
+            return myMuteStatusLabel;
+
+        }
+
+        private MuteButton muteButton()
+        {
+
+            return myMuteButton;
+
+        }
+
+    // 
+    // Private Mutators
+    // 
+
+        private void setModel(HolesModel otherModel)
+        {
+
+            returm myModel;
+
+        }
+
+        private void setMuteStatusLabel(MuteLabel otherMuteStatusLabel)
+        {
+
+            myMuteStatusLabel = otherMuteStatusLabel;
+
+        }
+
+        private void setMuteButton(MuteButton otherMuteButton)
+        {
+
+            myMuteButton = otherMuteButton;
+
+        }
+
+    //
+    // Public Constructors
+    // 
+
+        public OptionsComponent(HolesModel initialModel)
+        {
+
+            setModel(initialModel);
+            model().attach(this);
+            
+            // 
+            // Add Components to the Options Pane
+            // 
+       
+            
+            setMuteStatusLabel(new MuteLabel());
+            setMuteButton(new MuteButton());
+
+        }
+
+    // 
+    // Internal Classes
+    // 
+
+        class MuteLabel extends JLabel
+        {
+
+            // 
+            // Private Fields
+            // 
+
+                final String OUR_DEFAULT_UNMUTED_STRING = "Sound is not muted";
+                final String OUR_DEFAULT_MUTED_STRING = "Sound is muted";
+
+            // 
+            // Public Methods
+            // 
+
+                public void mute()
+                {
+
+                    setText(OUR_DEFAULT_MUTED_STRING);
+
+                }
+
+                public void unmute()
+                {
+
+                    setText(OUR_DEFAULT_UNMUTED_STRING);
+
+                }
+
+            // 
+            // Public Constructors
+            // 
+
+                public MuteLabel()
+                {
+
+                    setText(OUR_DEFAULT_UNMUTED_STRING);
+
+                }
+            
+        }
+
+        class MuteButton extends JButton
+        {
+
+            // 
+            // Public Constructors
+            // 
+
+                public MuteButton()
+                {
+                    addActionListener(new ActionListener () {
+                        
+                        @Override
+                        public void actionPerformed(ActionEvent e){
+                            model().toggleMute();
+                        }
+
+                    });
+
+                }
+
+        }
+
+        class StateSaveButton extends JButton
+        {
+
+        }
+
+        class StateRestoreButton extends JButton
+        {
+
+        }
+
+    //
+    // Public Observation Methods
+    //
+    
+        @Override
+        public void updateScore()
+        {
+            setText("Score: " + model().score());
+            
+            repaint();
+        }
+        
+        @Override
+        public void updateRedHolePosition()
+        {
+
+        }
+        
+        @Override
+        public void updateSoundStatus()
+        {
+            if (model().isMuted())
+                muteStatus().mute();
+            else
+                muteStatus().unmute();
+        }
+
+        @Override
+        public void updateLevel()
+        {
+            
+        }
+        
+        @Override
+        public void updateLivesRemaining()
+        {
+            
+        }
+
 
 }
-
 class ScoreComponent extends JLabel implements HolesModelObserver
 {
     //
@@ -370,7 +530,6 @@ class ScoreComponent extends JLabel implements HolesModelObserver
         }
     
 }
-
 class LivesComponent extends JLabel implements HolesModelObserver
 {
     //
@@ -451,7 +610,6 @@ class LivesComponent extends JLabel implements HolesModelObserver
         }
     
 }
-
 class LevelsComponent extends JLabel implements HolesModelObserver
 {
     //
@@ -532,7 +690,6 @@ class LevelsComponent extends JLabel implements HolesModelObserver
         }
     
 }
-
 class HolesComponent extends JComponent implements HolesModelObserver
 {
 
@@ -768,4 +925,3 @@ class HolesComponent extends JComponent implements HolesModelObserver
 
 
     }
-

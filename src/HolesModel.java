@@ -49,9 +49,9 @@ class HolesModel implements HolesModelObservable
         
         private int myTimerDelay = 1000;
 
-    ////
-    //// Private Accessors
-    ////
+    //
+    // Private Accessors
+    //
 
 
         private ArrayList< HolesModelObserver > observers()
@@ -68,9 +68,9 @@ class HolesModel implements HolesModelObservable
 
             }
 
-    ////
-    //// Public Accessors
-    ////
+    //
+    // Public Accessors
+    //
 
         public int level()
         {
@@ -180,9 +180,9 @@ class HolesModel implements HolesModelObservable
         
         
 
-    ////
-    //// Private Mutators
-    ////
+    //
+    // Private Mutators
+    //
 
         private void setObservers(ArrayList< HolesModelObserver> otherObservers)
         {
@@ -203,9 +203,9 @@ class HolesModel implements HolesModelObservable
             myLevel = other;
         }
 
-    ////
-    //// Public Mutators
-    ////
+    //
+    // Public Mutators
+    //
 
         public void setScore(int otherScore)
         {
@@ -314,9 +314,9 @@ class HolesModel implements HolesModelObservable
 
        
 
-    ////
-    //// Public Ctors
-    ////
+    //
+    // Public Ctors
+    //
 
         HolesModel()
         {
@@ -366,11 +366,11 @@ class HolesModel implements HolesModelObservable
     // Public Serialization Methods
     // 
 
+        
 
-
-    ////
-    //// Public Observation Methods
-    ////
+    //
+    // Public Observation Methods
+    //
 
         @Override
         public void announceScoreChange()
