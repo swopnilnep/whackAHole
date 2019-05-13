@@ -1,0 +1,14 @@
+#User preferences for loading and saving game states
+#Fri May 10 02:06:05 CDT 2019
+scoreIncrement=5
+level=1
+correctClicks=0
+gameIsOver=false
+score=0
+numberOfColumns=3
+redHoleColumn=1
+timerDelay=1000
+livesRemaining=3
+numberOfRows=3
+redHoleRow=2
+isMuted=false
