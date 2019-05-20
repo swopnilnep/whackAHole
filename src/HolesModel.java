@@ -4,6 +4,8 @@ import java.awt.event.ActionListener;
 import java.awt.geom.*;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import javax.swing.*;
 
 import java.util.ArrayList;
@@ -12,6 +14,10 @@ import java.util.Random;
 import java.util.Properties;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -233,7 +239,7 @@ class HolesModel implements HolesModelObservable
 
             }
 
-        private void setLevel(int other)
+        public void setLevel(int other)
         {
             myLevel = other;
             announceLevelChange();
@@ -346,6 +352,12 @@ class HolesModel implements HolesModelObservable
             announceSoundStatusChange();
         }
         
+        public void setMuteStatus(Boolean other)
+        {
+            soundIsMuted = other;
+            announceSoundStatusChange();
+        }
+        
         public Color randomBackgroundColor()
         {
             float red = randomNumber().nextFloat();
@@ -385,68 +397,102 @@ class HolesModel implements HolesModelObservable
             }
                 
         }
-        
 
     // 
     // Public Methods
     // 
 
-        public void saveProperties() {
-            try {
-                
-                // 
-                // Create a properties file
-                // 
-
-                Properties props = new Properties();
-
-                // 
-                // Set Properties
-                // 
-
-                props.setProperty("level", Integer.toString(level()));
-                props.setProperty("correctClicks", Integer.toString(correctClicks()));
-                props.setProperty("score", Integer.toString(score()));
-                props.setProperty("scoreIncrement", Integer.toString(scoreIncrement()));
-                props.setProperty("livesRemaining", Integer.toString(livesRemaining()));
-                props.setProperty("timerDelay", Integer.toString(timerDelay()));
-
-                props.setProperty("redHoleRow", Integer.toString(redHoleRow()));
-                props.setProperty("redHoleColumn", Integer.toString(redHoleColumn()));
-                props.setProperty("numberOfRows", Integer.toString(numberOfRows()));
-                props.setProperty("numberOfColumns", Integer.toString(numberOfColumns()));
-                
-                props.setProperty("gameIsOver", Boolean.toString(gameIsOver()));
-                props.setProperty("isMuted", Boolean.toString(isMuted()));
-                
-                // 
-                // Create and Export to a new file
-                // 
-                
-                File f = new File("properties.txt");
-                OutputStream out = new FileOutputStream( f );
-                
-                props.store(out, "User preferences for loading and saving game states");
-            }
-            catch (Exception e ) {
-                e.printStackTrace();
-            }
-        }
+//        public void saveProperties() {
+//            try {
+//                
+//                // 
+//                // Create a properties file
+//                // 
+//
+//                Properties props = new Properties();
+//
+//                // 
+//                // Set Properties
+//                // 
+//
+//                props.setProperty("level", Integer.toString(level()));
+//                props.setProperty("correctClicks", Integer.toString(correctClicks()));
+//                props.setProperty("score", Integer.toString(score()));
+//                props.setProperty("scoreIncrement", Integer.toString(scoreIncrement()));
+//                props.setProperty("livesRemaining", Integer.toString(livesRemaining()));
+//                props.setProperty("timerDelay", Integer.toString(timerDelay()));
+//
+//                props.setProperty("redHoleRow", Integer.toString(redHoleRow()));
+//                props.setProperty("redHoleColumn", Integer.toString(redHoleColumn()));
+//                props.setProperty("numberOfRows", Integer.toString(numberOfRows()));
+//                props.setProperty("numberOfColumns", Integer.toString(numberOfColumns()));
+//                
+//                props.setProperty("gameIsOver", Boolean.toString(gameIsOver()));
+//                props.setProperty("isMuted", Boolean.toString(isMuted()));
+//                
+//                // 
+//                // Create and Export to a new file
+//                // 
+//                
+//                File f = new File("properties.txt");
+//                OutputStream out = new FileOutputStream( f );
+//                
+//                props.store(out, "User properties for loading and saving game states");
+//            }
+//            catch (FileNotFoundException e ) {
+//                e.printStackTrace();
+//            } catch (IOException ex) {
+//                Logger.getLogger(HolesModel.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+        
+//        public void loadProperties()
+//        {
+//            
+//            try {
+//            
+//                Properties props = new Properties();
+//                File f = new File("properties.txt");
+//                InputStream in = new FileInputStream( f );
+//                props.load(in);
+//                
+//                setLevel( Integer.parseInt(props.getProperty("level")) ); 
+//                setScore( Integer.parseInt(props.getProperty("score")) );
+//                setScoreIncrement( Integer.parseInt(props.getProperty("scoreIncrement")) );
+//                setLivesRemaining( Integer.parseInt(props.getProperty("livesRemaining")) );
+//                setTimerDelay( Integer.parseInt(props.getProperty("timerDelay")) );
+//                
+//                setRedHoleRow( Integer.parseInt(props.getProperty("redHoleRow")) );
+//                setRedHolesColumn( Integer.parseInt(props.getProperty("redHoleColumn")) );
+//                setNumberOfRows( Integer.parseInt(props.getProperty("numberOfRows")) );
+//                setNumberOfColumns( Integer.parseInt(props.getProperty("numberOfColumns")) );
+//                
+//                setGameOver( Boolean.parseBoolean(props.getProperty("gameIsOver")) );
+//                setMuteStatus( Boolean.parseBoolean(props.getProperty("isMuted")) );
+//                
+//
+//            } 
+//            
+//            catch (FileNotFoundException e){
+//                e.printStackTrace();
+//            } catch (IOException ex) {
+//                Logger.getLogger(HolesModel.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            
+//        }
 
         public void resetModel()
         {
-
-            if (!gameIsOver()){
-
-                timer().start();
-                setLevel(0);
-                setCorrectClicks(0);
-                setScore(0);
-                setScoreIncrement(5);
-                setLivesRemaining(3);
-                setTimerDelay(1000);
-
-            }
+            
+            setGameOver(false);
+            setLevel(0);
+            setCorrectClicks(0);
+            setScore(0);
+            setScoreIncrement(5);
+            setLivesRemaining(3);
+            setTimerDelay(1000);
+            
+            timer().start();
 
         }
 

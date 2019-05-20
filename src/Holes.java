@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+
 public class Holes {
         public static void main(String[] commandLineArguments)
         {
@@ -191,7 +192,7 @@ class ProgramFrame extends JFrame
     // 
     // Public Constructors
     // 
-
+    
     public ProgramFrame(int initialNumberOfRows, int initialNumberOfColumns){
 
         setSize(
@@ -490,13 +491,14 @@ class OptionsComponent extends JPanel implements HolesModelObserver
                         @Override
                         public void actionPerformed(ActionEvent e) {
 
-                            ;
+                            model().loadProperties();
 
                         }
 
                     });
                 }
         }
+        
         class SaveButton extends JButton
         {
 
