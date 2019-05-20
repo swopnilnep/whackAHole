@@ -24,118 +24,10 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
+import java.util.ArrayList;
 public class Holes {
         public static void main(String[] commandLineArguments)
         {
-
-            // 
-            // Get user input from System.in using the Scanner object and verify with
-            // predeterminded conditions.
-            // 
-
-            Scanner input = new Scanner(System.in);
-
-            // 
-            // userInputRows is the desired number of rows of holes, entered by the user
-            // 
-
-            int userInputRows = -1;
-
-            // 
-            // userInputColumns is the desired number of rows of columns, entered by the user
-            // 
-
-            int userInputColumns = -1;
-
-            // 
-            // rowInputIsFulfilled is true if an integer is available for input and the input integer
-            // is between 3 and 9, inclusive
-            // 
-
-            boolean rowInputIsFulfilled = false;
-
-            // 
-            // Invariants: Until the input has an integer which is within the range of 3-9 inclusive,
-            //  rowInputIsFulfilled will be false
-            // 
-
-            while (!rowInputIsFulfilled)
-            {
-
-                System.out.print("Enter number of rows (between 3 and 9, inclusive): ");
-                
-                if (input.hasNext() && !input.hasNextInt()){
-
-                    System.err.println("*** Error: Input must be an integer");
-                    input.next();
-
-                }
-
-                else if (input.hasNextInt()) {
-
-                    userInputRows = input.nextInt();
-
-                    if (userInputRows < 3 || userInputRows > 9){
-
-                        System.err.println("*** Error: Input must be between 3 and 9, inclusive");
-
-                    }
-
-                    else {
-    
-                        rowInputIsFulfilled = true;
-
-                    }
-
-                }
-                
-            }
-
-            //
-            // columnInputIsFulfilled is true if an integer is available for input and the input integer
-            // is between 3 and 9, inclusive
-            //
-            boolean columnInputIsFulfilled = false;
-
-            //
-            // Invariants: Until the input has an integer which is within the range of 3-9 inclusive,
-            //  columnInputIsFulfilled will be false
-            //
-
-            while (!columnInputIsFulfilled)
-            {
-
-                System.out.print("Enter number of columns (between 3 and 9, inclusive): ");
-
-                if (input.hasNext() && !input.hasNextInt()){
-
-                    System.err.println("*** Error: Input must be an integer");
-                    input.next();
-
-                }
-
-                else if (input.hasNextInt()) {
-
-                    userInputColumns = input.nextInt();
-
-                    if (userInputColumns < 3 || userInputColumns > 9){
-
-                        System.err.println("*** Error: Input must be between 3 and 9, inclusive");
-    
-                    }
-    
-                    else {
-    
-                        columnInputIsFulfilled = true;
-    
-                    }
-
-                }
-                
-            }
-
-            final int OUR_NUMBER_OF_ROWS = userInputRows;
-            final int OUR_NUMBER_OF_COLUMNS = userInputColumns;
             
             // 
             // Run the program frame that displays a score and a userInputRows by userInputColumns
@@ -147,10 +39,10 @@ public class Holes {
             EventQueue.invokeLater(
                 new Runnable()
                 {
-
+                    @Override
                     public void run() {
 
-                        ProgramFrame frame = new ProgramFrame(OUR_NUMBER_OF_ROWS, OUR_NUMBER_OF_COLUMNS);
+                        ProgramFrame frame = new ProgramFrame();
                         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                         frame.setVisible(true);
 
@@ -193,6 +85,16 @@ class ProgramFrame extends JFrame
     // Public Constructors
     // 
     
+    public ProgramFrame()
+    {
+        this(5);
+    }
+    
+    public ProgramFrame(int sideLength)
+    {
+        this(sideLength,sideLength);
+    }
+
     public ProgramFrame(int initialNumberOfRows, int initialNumberOfColumns){
 
         setSize(
@@ -221,6 +123,7 @@ class ProgramFrame extends JFrame
 
         JPanel holesPanel = new JPanel();
         JPanel sidebarPanel = new JPanel();
+        //JPanel displayComponent = new DisplayComponent(model);
 
         // Setup the Holes Panel
         holesPanel.setLayout(new BoxLayout(holesPanel, BoxLayout.Y_AXIS));
@@ -237,8 +140,9 @@ class ProgramFrame extends JFrame
         // 
         // Add Components and Sub-Components to the Panels
         // 
-
+        
         mainPanel().add(holesPanel, BorderLayout.CENTER);
+        //mainPanel().add(displayComponent, BorderLayout.CENTER);
         mainPanel().add(sidebarPanel, BorderLayout.EAST);
 
         // 
@@ -260,6 +164,7 @@ class OptionsComponent extends JPanel implements HolesModelObserver
         private SaveButton mySaveStateButton;
         private LoadButton myLoadStateButton;
         private ResetButton myResetButton;
+
 
     // 
     // Private Accessors
@@ -304,6 +209,7 @@ class OptionsComponent extends JPanel implements HolesModelObserver
             return myLoadStateButton;
 
         }
+        
 
     // 
     // Private Mutators
@@ -348,7 +254,8 @@ class OptionsComponent extends JPanel implements HolesModelObserver
             myLoadStateButton = otherLoadStateButton;
             
         }
-
+        
+             
     //
     // Public Constructors
     // 
@@ -542,6 +449,7 @@ class OptionsComponent extends JPanel implements HolesModelObserver
                 }
 
         }
+                
 
     //
     // Public Observation Methods
@@ -582,6 +490,146 @@ class OptionsComponent extends JPanel implements HolesModelObserver
 
 
 }
+
+
+class DisplayComponent extends JPanel implements HolesModelObserver
+{
+    private HolesModel myModel;
+    private JTextField myUserRows = new JTextField(4);
+    private JTextField myUserColumns = new JTextField(4);
+    private JTextField myUserLives = new JTextField(4);
+    private JTextField myUserTimerDelay = new JTextField(4);   
+    
+    
+    private ArrayList< ArrayList< Ellipse2D.Double > > holesArray;    
+    
+    // Private Accessors
+    
+    private HolesModel model()
+    {
+        return myModel;
+    }
+    
+    private JTextField userRows()
+    {
+        return myUserRows;
+    }
+    
+    private JTextField userColumns()
+    {
+        return myUserColumns;
+    }
+    
+    private JTextField userLives()
+    {
+        return myUserLives;
+    }
+    
+    private JTextField userTimerDelay()
+    {
+        return myUserTimerDelay;
+    }
+    
+    
+    
+    // Private Mutators
+    private void setModel(HolesModel otherModel)
+    {
+        myModel = otherModel;
+    }
+    
+    
+    
+    // Public Constructor
+    
+    public DisplayComponent(HolesModel initialModel)
+    {
+        setModel(initialModel);
+        this.add(new JLabel("Enter Rows:"));
+        this.add(userRows());
+        this.add(new JLabel("Enter Columns:"));
+        this.add(userColumns());
+        this.add(new JLabel("Enter Lives:"));
+        this.add(userLives());
+        this.add(new JLabel("Enter Timer Delay (seconds):"));
+        this.add(userTimerDelay());
+        this.add(new SubmitButton());
+    }
+    
+    // Private Classes
+    
+    class SubmitButton extends JButton
+    {
+        
+        
+        public SubmitButton()
+                {
+
+                    this.setText("Submit");
+                    this.addActionListener(new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                            try
+                            {
+                                model().setTimerDelay(Integer.parseInt(userTimerDelay().getText()) * 1000);
+                                model().setLivesRemaining(Integer.parseInt(userLives().getText()));
+                                
+                                int initialRows = Integer.parseInt(userRows().getText());
+                                int initialColumns = Integer.parseInt(userColumns().getText());
+                                
+                            }
+                            
+                            catch(NumberFormatException ex)
+                            {
+                                System.out.println("Exception : "+ex);
+                            }
+
+                        }
+
+                    });
+                }
+    }
+    
+    
+    
+    
+
+    //
+    // Public Observation Methods
+    //
+        @Override
+        public void updateScore()
+        {
+            
+        }
+        
+        @Override
+        public void updateRedHolePosition()
+        {
+
+            }
+        
+        @Override
+        public void updateSoundStatus()
+        {
+            
+        }
+
+        @Override
+        public void updateLevel()
+        {
+            
+        }
+        
+        @Override
+        public void updateLivesRemaining()
+        {
+            
+        }
+}
+
 class ScoreComponent extends JLabel implements HolesModelObserver
 {
     //
@@ -932,7 +980,7 @@ class HolesComponent extends JComponent implements HolesModelObserver
         {
             if (!model().isMuted())
                 playSound(model().levelUpSound());
-            setBackground(model().randomBackgroundColor());
+            getParent().setBackground(model().randomBackgroundColor());
             repaint();
         }
 
