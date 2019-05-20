@@ -93,6 +93,13 @@ class HolesModel implements HolesModelObservable
     // Public Accessors
     //
 
+        public void setHoles( ArrayList< ArrayList < Ellipse2D.Double > > otherHoles)
+        {
+
+            myHoles = otherHoles;
+
+        }
+        
         public int level()
         {
             return myLevel;
@@ -226,12 +233,6 @@ class HolesModel implements HolesModelObservable
 
             }
 
-        private void setHoles( ArrayList< ArrayList < Ellipse2D.Double > > otherHoles)
-        {
-
-            myHoles = otherHoles;
-
-            }
 
         private void setLevel(int other)
         {
@@ -355,12 +356,6 @@ class HolesModel implements HolesModelObservable
             return randomColor;
         }
         
-        public void detachAll()
-        {
-            for (HolesModelObserver currentObserver : observers())
-                detach(currentObserver);
-        }
-        
         public void setGameOver(boolean otherGameStatus)
         {
             gameIsOver = otherGameStatus;
@@ -435,19 +430,16 @@ class HolesModel implements HolesModelObservable
 
         public void resetModel()
         {
-
-            if (!gameIsOver()){
-
-                timer().start();
-                setLevel(0);
-                setCorrectClicks(0);
-                setScore(0);
-                setScoreIncrement(5);
-                setLivesRemaining(3);
-                setTimerDelay(1000);
-
-            }
-
+            setGameOver(false);
+            timer().start();
+            setLevel(0);
+            setCorrectClicks(0);
+            setScore(0);
+            setScoreIncrement(5);
+            setLivesRemaining(3);
+            setTimerDelay(1000);
+            
+            
         }
 
     //
