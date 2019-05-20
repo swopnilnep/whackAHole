@@ -122,7 +122,7 @@ class ProgramFrame extends JFrame
 
         JPanel holesPanel = new JPanel();
         JPanel sidebarPanel = new JPanel();
-        JPanel displayComponent = new DisplayComponent(model);
+        //JPanel displayComponent = new DisplayComponent(model);
 
         // Setup the Holes Panel
         holesPanel.setLayout(new BoxLayout(holesPanel, BoxLayout.Y_AXIS));
@@ -141,7 +141,7 @@ class ProgramFrame extends JFrame
         // 
         
         mainPanel().add(holesPanel, BorderLayout.CENTER);
-        mainPanel().add(displayComponent, BorderLayout.CENTER);
+        //mainPanel().add(displayComponent, BorderLayout.CENTER);
         mainPanel().add(sidebarPanel, BorderLayout.EAST);
 
         // 
@@ -498,10 +498,6 @@ class DisplayComponent extends JPanel implements HolesModelObserver
     private JTextField myUserLives = new JTextField(4);
     private JTextField myUserTimerDelay = new JTextField(4);   
     
-    private int myRowsInteger;
-    private int myColumnsInteger;
-    private int myLivesInteger;
-    private int myTimerDelayInteger;
     
     private ArrayList< ArrayList< Ellipse2D.Double > > holesArray;    
     
@@ -982,7 +978,7 @@ class HolesComponent extends JComponent implements HolesModelObserver
         {
             if (!model().isMuted())
                 playSound(model().levelUpSound());
-            setBackground(model().randomBackgroundColor());
+            getParent().setBackground(model().randomBackgroundColor());
             repaint();
         }
 
