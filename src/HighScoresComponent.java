@@ -54,24 +54,37 @@ public class HighScoresComponent extends JPanel implements HolesModelObserver{
         setModel(initialModel);
         model().attach(this);
         
-//        String[][] exampleHighScores = {
-//            {"David", "420"}, {"Swopnil", "500"}
-//        };
-//        
-//        String[] columns = {"Name", "Score"};
-//        
-//        JTable testRun = new JTable(exampleHighScores, columns);
-        this.add(new JLabel("All Time High Scores"));
-//        this.add(testRun);
-        updateHighScores();
-        setTable(new JTable(tableObject(), new String[] {"Name", "Score"}));
-        table().setModel(new DefaultTableModel(
-                
-                tableObject(),
-                new String[] {"Name","Score"}
-        ));
+        String[][] exampleHighScores = {
+            {"Jon Snow","2094"},
+            {"Denarys","2048"},
+            {"David Bowie", "1998"}, 
+            {"Bilbo Baggins","1953"},
+            {"Freddie Mercury", "1945"}, 
+            {"Tyrion Lannister", "1899"}, 
+            {"Sansa Stark", "1856"}, 
+            {"Arya Stark", "1820"}, 
+            {"R2D2", "1742"}, 
+            {"Harry Potter","1578"},
+            {"Dr. Who","1467"},
+            {"Sauron","1452"},
+            {"Lakshmana","1345"},
+            {"Kansha Bramhacharya","1311"},
+        };
         
-        this.add(table());
+        String[] columns = {"Name", "Score"};
+        
+        JTable testRun = new JTable(exampleHighScores, columns);
+        this.add(new JLabel("All Time High Scores"));
+        this.add(testRun);
+//        updateHighScores();
+//        setTable(new JTable(tableObject(), new String[] {"Name", "Score"}));
+//        table().setModel(new DefaultTableModel(
+//                
+//                tableObject(),
+//                new String[] {"Name","Score"}
+//        ));
+//        
+//        this.add(table());
         
     }
     

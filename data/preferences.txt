@@ -1,0 +1,14 @@
+#User properties for loading and saving game states
+#Tue May 21 12:54:43 CDT 2019
+scoreIncrement=15
+level=2
+correctClicks=5
+gameIsOver=true
+score=240
+numberOfColumns=5
+redHoleColumn=2
+timerDelay=1000
+livesRemaining=0
+numberOfRows=5
+redHoleRow=3
+isMuted=false

@@ -58,7 +58,7 @@ class HolesModel implements HolesModelObservable
     private final String OUR_RESET_SOUND = "sounds/resetGame.wav";
 
     
-    private final String OUR_HIGHSCORES_FILE_LOCATION = "data/highscores.dat";
+    private final String OUR_HIGHSCORES_FILE_LOCATION = "data/highscores.txt";
     
     private int myTimerDelay = 1000;
 
@@ -394,8 +394,6 @@ class HolesModel implements HolesModelObservable
         addHighScores();
         writeHighScores();
 
-        System.out.println(highScores());
-
 
     }
     
@@ -414,6 +412,8 @@ class HolesModel implements HolesModelObservable
             highScores().remove(highScores().firstKey());
         }
         
+        
+        System.out.println("Add HighScores: " + highScores());
 
     }
 
@@ -431,20 +431,27 @@ class HolesModel implements HolesModelObservable
 
             ObjectInputStream inputStream = new ObjectInputStream(
                     new FileInputStream(
-                            new File(OUR_HIGHSCORES_FILE_LOCATION)
+                            (OUR_HIGHSCORES_FILE_LOCATION)
                     )
             );
+            
+            
+            System.out.println("Passing TreeMap to setHighScores");
             setHighScores(
                 (TreeMap < Integer, String > ) inputStream.readObject()
             );
 
+            System.out.println("Read Object: " + highScores());
+            
         }
         catch (FileNotFoundException ex)
         {
+            System.out.println("Reading HS: File not found");
             writeHighScores();
         }
         catch (IOException | ClassNotFoundException ex)
         {
+            System.out.println("Reading HS: Class not found");
             Logger.getLogger(HolesModel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -459,19 +466,25 @@ class HolesModel implements HolesModelObservable
 
             ObjectOutputStream outputStream = new ObjectOutputStream(
                     new FileOutputStream(
-                            new File(OUR_HIGHSCORES_FILE_LOCATION)
+                            (OUR_HIGHSCORES_FILE_LOCATION)
                     )
             );
+            
             outputStream.writeObject(highScores());
-
+            
+            outputStream.close();
+            
+            System.out.println("Write Object " + highScores());
 
         }
         catch (FileNotFoundException ex)
         {
+            System.out.print("Writing HS: File not found");
             Logger.getLogger(HolesModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         catch (IOException ex)
         {
+            System.out.println("Writing HS: IO Exception");
             Logger.getLogger(HolesModel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
