@@ -66,6 +66,7 @@ class DisplayComponent extends JPanel implements HolesModelObserver
     {
         setModel(initialModel);
         
+        
         // Enter Name of the user
         
         this.add(new JLabel("Enter your name:"));
@@ -134,7 +135,8 @@ class DisplayComponent extends JPanel implements HolesModelObserver
 
                         }
                         
-                        getParent().setVisible(false);
+                        model().setHoles(myHoles);
+                        
 
 
                     }

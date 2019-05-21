@@ -1,4 +1,5 @@
 
+import java.util.Arrays;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JLabel;
@@ -24,7 +25,7 @@ public class HighScoresComponent extends JPanel implements HolesModelObserver{
         return myTable;
     }
     
-    private Object [][] tableObject()
+    private Object[][] tableObject()
     {
         return myTableObject;
     }
@@ -51,36 +52,32 @@ public class HighScoresComponent extends JPanel implements HolesModelObserver{
     public HighScoresComponent(HolesModel initialModel)
     {
         setModel(initialModel);
-        setTable(new JTable());
+        model().attach(this);
+        
+//        String[][] exampleHighScores = {
+//            {"David", "420"}, {"Swopnil", "500"}
+//        };
+//        
+//        String[] columns = {"Name", "Score"};
+//        
+//        JTable testRun = new JTable(exampleHighScores, columns);
+        this.add(new JLabel("All Time High Scores"));
+//        this.add(testRun);
+        updateHighScores();
+        setTable(new JTable(tableObject(), new String[] {"Name", "Score"}));
         table().setModel(new DefaultTableModel(
                 
                 tableObject(),
                 new String[] {"Name","Score"}
         ));
         
-        this.add(new JLabel("All Time High Scores"));
         this.add(table());
+        
     }
     
     @Override
     public void updateScore() {
         
-        Object[] outerObject = new Object[16];
-        Object[] innerObject = new Object[2];
-        
-        int currentOuterIndex = 0;
-        for (Integer key: model().highScores().keySet())
-        {
-            innerObject[0] = model().highScores().get(key);
-            innerObject[1] = key;
-            
-            outerObject[currentOuterIndex] = innerObject;
-             
-        }
-        
-        setTableObject((Object[][]) outerObject);
-        
-        this.add(table());
         
     }
 
@@ -107,7 +104,25 @@ public class HighScoresComponent extends JPanel implements HolesModelObserver{
     @Override
     public void updateHighScores()
     {
+        Object[][] outerObject = new Object[16][2];
+
         
+        int currentOuterIndex = 0;
+        for (Integer key: model().highScores().keySet())
+        {
+            
+            outerObject[currentOuterIndex][1] = model().highScores().get(key);
+            outerObject[currentOuterIndex][0] = key;
+            
+            
+            ++currentOuterIndex;
+            
+        }
+        
+        setTableObject(outerObject);
+        repaint();
+        
+        //this.add(table());
     }
 
     

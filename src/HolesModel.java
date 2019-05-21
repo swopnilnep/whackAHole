@@ -384,13 +384,13 @@ class HolesModel implements HolesModelObservable
     {
         setGameOver(true);
         timer().stop();
-        // updateHighScores();
+        //updateHighScores();
         System.out.println("Game Over");
         // Instead of detaching, announce the change and show game over text
 
 
         readHighScores();
-        updateHighScores();
+        addHighScores();
         writeHighScores();
 
         System.out.println(highScores());
@@ -398,7 +398,7 @@ class HolesModel implements HolesModelObservable
 
     }
 
-    public void updateHighScores()
+    public void addHighScores()
     {
 
         highScores().put(score(), userName() );
@@ -407,6 +407,7 @@ class HolesModel implements HolesModelObservable
         {
             highScores().remove(highScores().firstKey());
         }
+        
 
     }
 
