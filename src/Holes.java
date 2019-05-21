@@ -585,10 +585,10 @@ class DisplayComponent extends JPanel implements HolesModelObserver
 
                             try
                             {
-                                int userDelay = Integer.parseInt(userTimerDelay().getText());
+                                int userDelay = Integer.parseInt(userTimerDelay().getText()) * 1000;
                                 int livesRemaining = Integer.parseInt(userLives().getText());
                                 
-                                if (userDelay > 0)
+                                if (userDelay > 0 && userDelay < 5)
                                     model().setTimerDelay(userDelay);
                                 
                                 if (livesRemaining < 10 &&  livesRemaining > 0)
@@ -598,9 +598,7 @@ class DisplayComponent extends JPanel implements HolesModelObserver
                                 
                                 int initialRows = Integer.parseInt(userRows().getText());
                                 int initialColumns = Integer.parseInt(userColumns().getText());
-                                
-                                if (initialRows > 3 && initialColumns > 3){
-                                
+                                                                
                                 myHoles = new ArrayList< ArrayList< Ellipse2D.Double > >();
 
                                 for (int row = 0; row < initialRows; ++ row) {
@@ -610,20 +608,7 @@ class DisplayComponent extends JPanel implements HolesModelObserver
                                     for (int column = 0; column < initialColumns; ++ column)
                                         myHoles.get(row).add(new Ellipse2D.Double(0, 0, 0, 0));
 
-                                }
-                                }
-                                
-                                else{
-                                    myHoles = new ArrayList< ArrayList< Ellipse2D.Double > >();
-
-                                    for (int row = 0; row < initialRows; ++ row) {
-
-                                        myHoles.add(new ArrayList< Ellipse2D.Double >());
-
-                                        for (int column = 0; column < initialColumns; ++ column)
-                                            myHoles.get(row).add(new Ellipse2D.Double(0, 0, 0, 0));
-                                }
-                                    
+                                }    
                                 getParent().setVisible(false);
                                 
                                 
