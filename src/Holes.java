@@ -127,10 +127,11 @@ class ProgramFrame extends JFrame
         JPanel holesPanel = new JPanel();
         JPanel sidebarPanel = new JPanel();
         JPanel displayComponent = new DisplayComponent(model());
+        JPanel highScoresComponent = new HighScoresComponent(model());
 
         displayComponent.setLayout(new BoxLayout(displayComponent, BoxLayout.Y_AXIS));
-
-
+        highScoresComponent.setLayout(new BoxLayout(highScoresComponent, BoxLayout.Y_AXIS));
+        
         // Setup the Holes Panel
         holesPanel.setLayout(new BoxLayout(holesPanel, BoxLayout.Y_AXIS));
         holesPanel.add(new HolesComponent( model()) );
@@ -138,11 +139,14 @@ class ProgramFrame extends JFrame
 
         // Setup the Sidebar Panel Layout and Components
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
+        
         sidebarPanel.add(new ScoreComponent(model()));
         sidebarPanel.add(new LevelsComponent(model()));
         sidebarPanel.add(new LivesComponent(model()));
         sidebarPanel.add(new OptionsComponent(model()));
+
         sidebarPanel.add(displayComponent);
+        sidebarPanel.add(highScoresComponent);
 
         // 
         // Add Components and Sub-Components to the Panels

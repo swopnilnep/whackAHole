@@ -279,7 +279,7 @@ class OptionsComponent extends JPanel implements HolesModelObserver
                     {
 
                         Properties props = new Properties();
-                        File f = new File("../data/properties.txt");
+                        File f = new File("data/preferences.txt");
                         InputStream in = new FileInputStream(f);
                         props.load( in );
 
@@ -307,7 +307,8 @@ class OptionsComponent extends JPanel implements HolesModelObserver
                         model().setGameOver(Boolean.parseBoolean(props.getProperty("gameIsOver")));
                         model().setMuteStatus(Boolean.parseBoolean(props.getProperty("isMuted")));
 
-
+                        model().writeHighScores();
+                        model().readHighScores();
 
                     }
                     catch (FileNotFoundException ex)
@@ -370,11 +371,13 @@ class OptionsComponent extends JPanel implements HolesModelObserver
                         props.setProperty("gameIsOver", Boolean.toString(model().gameIsOver()));
                         props.setProperty("isMuted", Boolean.toString(model().isMuted()));
 
+                        model().writeHighScores();
+                        
                         // 
                         // Create and Export to a new file
                         // 
 
-                        File f = new File("../data/properties.txt");
+                        File f = new File("data/preferences.txt");
                         OutputStream out = new FileOutputStream(f);
 
                         props.store(out, "User properties for loading and saving game states");

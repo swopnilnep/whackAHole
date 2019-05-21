@@ -50,11 +50,15 @@ class HolesModel implements HolesModelObservable
     private Random myPseudoRandomNumberGenerator;
 
     private Boolean soundIsMuted = false;
+    
     private final String OUR_CORRECT_SOUND = "sounds/correctSound.wav";
     private final String OUR_WRONG_SOUND = "sounds/wrongSound.wav";
     private final String OUR_LEVEL_UP_SOUND = "sounds/levelUp.wav";
-    private final String OUR_RESET_SOUND = "sound/resetGame.wav";
+    private final String OUR_RESET_SOUND = "sounds/resetGame.wav";
 
+    
+    private final String OUR_HIGHSCORES_FILE_LOCATION = "data/highscores.dat";
+    
     private int myTimerDelay = 1000;
 
     private Boolean gameIsOver = false;
@@ -70,6 +74,7 @@ class HolesModel implements HolesModelObservable
         }
 
     };
+    
     private Timer myTimer = new Timer(myTimerDelay, taskPerformer);
 
     TreeMap < Integer, String > myHighScores = new TreeMap < > ();
@@ -417,7 +422,7 @@ class HolesModel implements HolesModelObservable
         try
         {
 
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("../data/highscores.dat"));
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(OUR_HIGHSCORES_FILE_LOCATION));
             setHighScores(
                 (TreeMap < Integer, String > ) inputStream.readObject()
             );
@@ -441,7 +446,7 @@ class HolesModel implements HolesModelObservable
         try
         {
 
-            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("../data/highscores.dat"));
+            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(OUR_HIGHSCORES_FILE_LOCATION));
             outputStream.writeObject(highScores());
 
 
@@ -471,6 +476,9 @@ class HolesModel implements HolesModelObservable
     public void resetModel()
     {
 
+        
+        writeHighScores();
+        
         setGameOver(false);
         setLevel(0);
         setCorrectClicks(0);
@@ -478,7 +486,9 @@ class HolesModel implements HolesModelObservable
         setScoreIncrement(5);
         setLivesRemaining(3);
         setTimerDelay(1000);
-
+        
+        readHighScores();
+        
         timer().start();
 
     }

@@ -1,9 +1,8 @@
 
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
-
-
 
 public class HighScoresComponent extends JPanel implements HolesModelObserver{
 
@@ -58,6 +57,9 @@ public class HighScoresComponent extends JPanel implements HolesModelObserver{
                 tableObject(),
                 new String[] {"Name","Score"}
         ));
+        
+        this.add(new JLabel("All Time High Scores"));
+        this.add(table());
     }
     
     @Override
@@ -77,6 +79,9 @@ public class HighScoresComponent extends JPanel implements HolesModelObserver{
         }
         
         setTableObject((Object[][]) outerObject);
+        
+        this.add(table());
+        
     }
 
     @Override
