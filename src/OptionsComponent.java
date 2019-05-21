@@ -33,6 +33,7 @@ class OptionsComponent extends JPanel implements HolesModelObserver
     private SaveButton mySaveStateButton;
     private LoadButton myLoadStateButton;
     private ResetButton myResetButton;
+    private PauseButton myPauseButton;
 
 
     // 
@@ -77,6 +78,11 @@ class OptionsComponent extends JPanel implements HolesModelObserver
 
         return myLoadStateButton;
 
+    }
+    
+    private PauseButton pauseButton()
+    {
+        return myPauseButton;
     }
 
 
@@ -124,7 +130,11 @@ class OptionsComponent extends JPanel implements HolesModelObserver
 
     }
 
-
+    private void setPauseButton(PauseButton otherPauseButton)
+    {
+        myPauseButton = otherPauseButton;
+    }
+    
     //
     // Public Constructors
     // 
@@ -145,6 +155,7 @@ class OptionsComponent extends JPanel implements HolesModelObserver
         setSaveStateButton(new SaveButton());
         setLoadStateButton(new LoadButton());
         setResetButton(new ResetButton());
+        setPauseButton(new PauseButton());
 
         // 
         // Add buttons to the options pane
@@ -158,6 +169,7 @@ class OptionsComponent extends JPanel implements HolesModelObserver
         add(saveStateButton());
         add(loadStateButton());
         add(resetButton());
+        add(pauseButton());
 
         // Add Spacer
         add(Box.createVerticalGlue());
@@ -172,6 +184,33 @@ class OptionsComponent extends JPanel implements HolesModelObserver
     // 
     // Internal Classes
     // 
+    
+        
+    class PauseButton extends JButton
+    {
+        //
+        // Public Constructors
+        //
+        
+        public PauseButton()
+        {
+            this.setText("Pause");
+            this.addActionListener(new ActionListener()
+            
+            {
+            
+                @Override
+                public void actionPerformed(ActionEvent e)
+                {
+                    model().stopTimer();
+                }
+                
+            }
+                    
+            );
+        }
+    }
+
 
     class ResetButton extends JButton
     {
@@ -216,6 +255,7 @@ class OptionsComponent extends JPanel implements HolesModelObserver
             }
         }
     }
+    
     class MuteLabel extends JLabel
     {
 
@@ -256,6 +296,7 @@ class OptionsComponent extends JPanel implements HolesModelObserver
         }
 
     }
+    
     class LoadButton extends JButton
     {
 

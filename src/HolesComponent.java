@@ -199,7 +199,9 @@ class HolesComponent extends JComponent implements HolesModelObserver
             // Pseudo-randomly move the red hole
             //
 
-            model().randomizeRedHolePosition();
+            if (!model().gameIsOver()){
+                model().randomizeRedHolePosition();
+            }
 
         }
 
@@ -243,6 +245,7 @@ class HolesComponent extends JComponent implements HolesModelObserver
                 model().randomizeRedHolePosition();
 
             }
+            
             else if (!model().gameIsOver())
             {
                 if (!model().isMuted())
