@@ -3,7 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/willda07/Documents/whackahole/src/Holes.java</file>
+            <file>file:/Users/swopnilnep/projects/Holes/whackahole/src/DisplayComponent.java</file>
+            <file>file:/Users/swopnilnep/projects/Holes/whackahole/src/ScoreComponent.java</file>
+            <file>file:/Users/swopnilnep/projects/Holes/whackahole/src/LevelsComponent.java</file>
+            <file>file:/Users/swopnilnep/projects/Holes/whackahole/src/LivesComponent.java</file>
+            <file>file:/Users/swopnilnep/projects/Holes/whackahole/src/Holes.java</file>
+            <file>file:/Users/swopnilnep/projects/Holes/whackahole/src/HolesModelObservable.java</file>
+            <file>file:/Users/swopnilnep/projects/Holes/whackahole/src/HolesModelObserver.java</file>
+            <file>file:/Users/swopnilnep/projects/Holes/whackahole/src/HolesComponent.java</file>
+            <file>file:/Users/swopnilnep/projects/Holes/whackahole/src/HolesModel.java</file>
+            <file>file:/Users/swopnilnep/projects/Holes/whackahole/src/OptionsComponent.java</file>
         </group>
     </open-files>
 </project-private>

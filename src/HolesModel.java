@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.*;
+import java.io.File;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -397,6 +398,11 @@ class HolesModel implements HolesModelObservable
 
 
     }
+    
+    public void stopTimer()
+    {
+        timer().stop();
+    }
 
     public void addHighScores()
     {
@@ -423,7 +429,11 @@ class HolesModel implements HolesModelObservable
         try
         {
 
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(OUR_HIGHSCORES_FILE_LOCATION));
+            ObjectInputStream inputStream = new ObjectInputStream(
+                    new FileInputStream(
+                            new File(OUR_HIGHSCORES_FILE_LOCATION)
+                    )
+            );
             setHighScores(
                 (TreeMap < Integer, String > ) inputStream.readObject()
             );
@@ -447,7 +457,11 @@ class HolesModel implements HolesModelObservable
         try
         {
 
-            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(OUR_HIGHSCORES_FILE_LOCATION));
+            ObjectOutputStream outputStream = new ObjectOutputStream(
+                    new FileOutputStream(
+                            new File(OUR_HIGHSCORES_FILE_LOCATION)
+                    )
+            );
             outputStream.writeObject(highScores());
 
 
