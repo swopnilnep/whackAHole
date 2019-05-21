@@ -64,6 +64,7 @@ class ProgramFrame extends JFrame
     private final String OUR_TITLE = "Holes";
     private final int OUR_INITIAL_HOLE_DIAMETER = 200;
     private JPanel myMainPanel;
+    private HolesModel myModel;
 
     // 
     // Private Accessors
@@ -72,6 +73,11 @@ class ProgramFrame extends JFrame
     private JPanel mainPanel(){
         return myMainPanel;
     }
+    
+    private HolesModel model()
+    {
+        return myModel;
+    }
 
     // 
     // Private Mutators
@@ -79,6 +85,11 @@ class ProgramFrame extends JFrame
 
     private void setMainPanel(JPanel other){
         myMainPanel = other;
+    }
+    
+    public void setModel(HolesModel otherModel)
+    {
+        myModel = otherModel;
     }
 
     // 
@@ -103,11 +114,8 @@ class ProgramFrame extends JFrame
             );
         setTitle(OUR_TITLE);
 
-        // 
-        // Create the Model
-        // 
-
-        HolesModel model = new HolesModel(initialNumberOfRows, initialNumberOfColumns);
+        
+        setModel(new HolesModel(initialNumberOfRows, initialNumberOfColumns));
     
         // 
         // Set Main Panel to Hold all Sub-Panels
@@ -123,26 +131,29 @@ class ProgramFrame extends JFrame
 
         JPanel holesPanel = new JPanel();
         JPanel sidebarPanel = new JPanel();
-        //JPanel displayComponent = new DisplayComponent(model);
-
+        JPanel displayComponent = new DisplayComponent(model());
+        
+        displayComponent.setLayout(new BoxLayout(displayComponent, BoxLayout.Y_AXIS));
+       
+        
         // Setup the Holes Panel
         holesPanel.setLayout(new BoxLayout(holesPanel, BoxLayout.Y_AXIS));
-        holesPanel.add(new HolesComponent(model));
-        holesPanel.setBackground(model.randomBackgroundColor());
+        holesPanel.add(new HolesComponent(model()));
+        holesPanel.setBackground(model().randomBackgroundColor());
 
         // Setup the Sidebar Panel Layout and Components
         sidebarPanel.setLayout(new BoxLayout(sidebarPanel, BoxLayout.Y_AXIS));
-        sidebarPanel.add(new ScoreComponent(model));
-        sidebarPanel.add(new LevelsComponent(model));
-        sidebarPanel.add(new LivesComponent(model));
-        sidebarPanel.add(new OptionsComponent(model));
+        sidebarPanel.add(new ScoreComponent(model()));
+        sidebarPanel.add(new LevelsComponent(model()));
+        sidebarPanel.add(new LivesComponent(model()));
+        sidebarPanel.add(new OptionsComponent(model()));
+        sidebarPanel.add(displayComponent);
         
         // 
         // Add Components and Sub-Components to the Panels
         // 
         
         mainPanel().add(holesPanel, BorderLayout.CENTER);
-        //mainPanel().add(displayComponent, BorderLayout.CENTER);
         mainPanel().add(sidebarPanel, BorderLayout.EAST);
 
         // 
@@ -398,7 +409,7 @@ class OptionsComponent extends JPanel implements HolesModelObserver
                         @Override
                         public void actionPerformed(ActionEvent e) {
 
-                            model().loadProperties();
+                            //model().loadProperties();
 
                         }
 
@@ -422,7 +433,7 @@ class OptionsComponent extends JPanel implements HolesModelObserver
                         @Override
                         public void actionPerformed(ActionEvent e) {
 
-                            model().saveProperties();
+                            //model().saveProperties();
 
                         }
 
@@ -561,6 +572,7 @@ class DisplayComponent extends JPanel implements HolesModelObserver
     class SubmitButton extends JButton
     {
         
+        private ArrayList< ArrayList< Ellipse2D.Double > > myHoles;
         
         public SubmitButton()
                 {
@@ -573,17 +585,54 @@ class DisplayComponent extends JPanel implements HolesModelObserver
 
                             try
                             {
-                                model().setTimerDelay(Integer.parseInt(userTimerDelay().getText()) * 1000);
-                                model().setLivesRemaining(Integer.parseInt(userLives().getText()));
+                                int userDelay = Integer.parseInt(userTimerDelay().getText());
+                                int livesRemaining = Integer.parseInt(userLives().getText());
+                                
+                                if (userDelay > 0)
+                                    model().setTimerDelay(userDelay);
+                                
+                                if (livesRemaining < 10 &&  livesRemaining > 0)
+                                    model().setLivesRemaining(livesRemaining);
+                                else
+                                    model().setLivesRemaining(3);
                                 
                                 int initialRows = Integer.parseInt(userRows().getText());
                                 int initialColumns = Integer.parseInt(userColumns().getText());
+                                
+                                if (initialRows > 3 && initialColumns > 3){
+                                
+                                myHoles = new ArrayList< ArrayList< Ellipse2D.Double > >();
+
+                                for (int row = 0; row < initialRows; ++ row) {
+
+                                    myHoles.add(new ArrayList< Ellipse2D.Double >());
+
+                                    for (int column = 0; column < initialColumns; ++ column)
+                                        myHoles.get(row).add(new Ellipse2D.Double(0, 0, 0, 0));
+
+                                }
+                                }
+                                
+                                else{
+                                    myHoles = new ArrayList< ArrayList< Ellipse2D.Double > >();
+
+                                    for (int row = 0; row < initialRows; ++ row) {
+
+                                        myHoles.add(new ArrayList< Ellipse2D.Double >());
+
+                                        for (int column = 0; column < initialColumns; ++ column)
+                                            myHoles.get(row).add(new Ellipse2D.Double(0, 0, 0, 0));
+                                }
+                                    
+                                getParent().setVisible(false);
+                                
                                 
                             }
                             
                             catch(NumberFormatException ex)
                             {
                                 System.out.println("Exception : "+ex);
+                                
                             }
 
                         }
@@ -981,7 +1030,10 @@ class HolesComponent extends JComponent implements HolesModelObserver
             if (!model().isMuted())
                 playSound(model().levelUpSound());
             getParent().setBackground(model().randomBackgroundColor());
+            int newDelay = (int) (model().timerDelay() * 0.8);
+            model().setTimerDelay(newDelay);
             repaint();
+            
         }
 
     //

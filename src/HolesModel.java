@@ -317,7 +317,7 @@ class HolesModel implements HolesModelObservable
         
         public void setTimerDelay(int otherDelay)
         {
-            myTimerDelay = otherDelay;
+            timer().setDelay(otherDelay);
         }
 
         private void setRedHolePosition(int otherRow, int otherColumn)
